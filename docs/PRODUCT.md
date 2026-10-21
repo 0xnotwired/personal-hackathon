@@ -1,9 +1,17 @@
 # Autonomía Digital — product definition
 
-Status: proposed product specification; implementation and user validation have
-not started. Updated 2026-10-21.
+Status: implemented mobile practice simulator; target-user validation and physical-device acceptance remain pending. Updated 2026-10-21.
 
 [Start here](../README.md) · [Execution plan](ACTION_PLAN.md) · [Validation](VALIDATION.md)
+
+## Current product additions
+
+Personal-inspired blue/cyan mobile UI, a single-column phone shell, labeled
+bottom navigation and standalone installation metadata. Help uses Ímpetu-adapted
+adult next-action guidance. Optional local message help quotes pressure cues,
+keeps no-match inconclusive and supplies unsent reply drafts, adapted from
+Gambit and Wolf and Cronos. See DESIGN_SYSTEM.md, COMPANION_CONTRACT.md and
+REUSE_ANALYSIS.md; these do not introduce live providers or a generative agent.
 
 ## The promise
 

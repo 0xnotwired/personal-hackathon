@@ -1,0 +1,29 @@
+Autonomía Digital
+
+This product includes adaptations from:
+
+ÍMPETU — https://github.com/annatchijova/impetu
+Copyright 2026 Anna Tchijova. Apache-2.0.
+Source: 2e90c8f4ccd96f056a7d054e16545d61177e3bf6, agent/prompts.py.
+Adapted communication principles and next-action guidance: app/lib/companion.ts.
+No Google integration, cloud deployment proof or medical claim is inherited.
+
+GAMBIT YourMove — https://github.com/annatchijova/gambit
+Copyright 2026 Olga Vasilieva and Anna Tchijova. Apache-2.0.
+Source: 265ff9d7bd172d242e25afc623ce564807af3e65,
+src/lib/frameworks/lexical.ts; src/lib/schemas/think_schema.ts.
+Modified verbatim evidence matcher: app/lib/safety/verbatim.ts.
+Draft-only choices with explicit consequences inform our authored reply options.
+No model, original severity scoring or English-only fleet is included.
+
+Wolf and Cronos — https://github.com/annatchijova/wolf-and-cronos
+Copyright 2026 Anna Tchijova. Apache-2.0.
+Source: 74ed33977d015b9024277b164857642d906a2919,
+corvus/corvus/verdict/engine.py and analysis/l2_carnegie_cialdini.py.
+Adapted distinct-signal gate and categories: app/lib/safety/assess.ts.
+Rules are rewritten for bounded Spanish examples, with no confidence percentage,
+no safe verdict, behavioral profiling, forensic signature or cryptographic claim.
+
+Modified files carry provenance comments. Full upstream license texts are in
+third_party/licenses/. Source analysis and limits: docs/REUSE_ANALYSIS.md.
+Other installed dependencies retain licenses in their distributed packages.

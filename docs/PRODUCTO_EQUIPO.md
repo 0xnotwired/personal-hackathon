@@ -1,10 +1,27 @@
-# Autonomía Digital — el producto que vamos a construir
+# Personal · Autonomía Digital — producto para el equipo
 
 Documento para el equipo · 21 de octubre de 2026
 
-**Estado actual:** tenemos el diseño y la planificación. Todavía no hay una
-aplicación implementada ni pruebas con usuarios. La versión final será un
-simulador completo: no necesita integrar bancos, pagos ni proveedores reales.
+**Estado actual:** ya existe una aplicación móvil web con el recorrido completo
+para practicar el pago de una factura. Incluye guardado, favoritos, ayuda,
+controles de voz, resultados, cancelación y comprobante de práctica. Las pruebas
+con personas del público objetivo y de voz en teléfonos físicos siguen pendientes.
+La simulación es el producto: no conectamos bancos ni proveedores reales.
+
+**Diseño actual:** azul y celeste inspirado en Personal, una sola columna de
+celular, botones grandes y navegación inferior con texto: Inicio, Ayuda y Voz.
+Incluye metadatos para abrirse como app desde la pantalla de inicio en navegadores
+compatibles; todavía no comprobamos esa instalación en un teléfono físico.
+
+**Aportes incorporados:** de Ímpetu tomamos el tono adulto, un próximo paso concreto,
+la pausa sin culpa y conservar el contexto. De Gambit, mostrar las frases que
+respaldan una observación y ofrecer respuestas sin enviarlas. De Wolf and Cronos,
+contrastar señales distintas antes de elevar la cautela. “Me están apurando para
+pagar” permite practicar con ejemplos o revisar un mensaje localmente. Nunca dice
+que un mensaje sea seguro por no encontrar señales y nunca confirma un pago.
+
+[Diseño móvil](DESIGN_SYSTEM.md) · [Adaptación de Ímpetu](COMPANION_CONTRACT.md) ·
+[Fuentes, código reutilizado y límites](REUSE_ANALYSIS.md) · [Cómo ejecutar](RUNBOOK.md)
 
 [Plan por módulos](ACTION_PLAN.md) · [Arquitectura y repos](ARCHITECTURE.md) ·
 [Estrategia del hackathon](HACKATHON_PLAYBOOK.md) · [Demo y pitch](DEMO_AND_PITCH.md)
@@ -68,8 +85,7 @@ El equipo tiene que comprobar, con personas de ese perfil, que:
 
 Aplicamos la skill `red-team-auditing` para cuestionar estas suposiciones. La
 [revisión](RED_TEAM_USABILITY.md) contiene cinco riesgos de diseño y veinte
-escenarios para intentar romper el recorrido. Todavía no son fallos reproducidos:
-hay que comprobarlos en la aplicación y con usuarios, incluyendo una primera
+escenarios para intentar romper el recorrido. Ya hay cobertura técnica de varios casos; el estado exacto está en IMPLEMENTATION_STATUS.md. Falta comprobar la comprensión con usuarios, incluyendo una primera
 visita sin explicación previa y una segunda factura sin indicaciones.
 
 ## Cómo se verá

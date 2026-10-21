@@ -6,11 +6,11 @@ procedures in a complete practice environment, with written and spoken guidance.
 utility bill payment end to end; medical appointments, transport, shopping, and bank
 procedures are later extensions, not implemented features.
 
-**There is no application code yet.** This file is written *before* the code exists.
-The invariants below are design constraints derived from the challenge's stated
-pressures, not post-incident lessons. Where a mechanism is named, it is the thing to
-build; until it exists the invariant is **convention**, and this file says which kind
-each one is. Do not cite an incident here that did not happen.
+**A runnable Next.js simulator now exists on `ai-1`.** Inspect
+[implementation status](docs/IMPLEMENTATION_STATUS.md) for executed checks and
+remaining real-device/user validation. The user is continuing directly with
+Codex; Devin AI is not a dependency. The original planning rules below remain
+product requirements; mechanisms and current evidence are linked where built.
 
 The product copy is **Spanish (es-AR)**. This file, the skills, and code stay in
 English unless a skill or the UI itself requires otherwise.
@@ -29,15 +29,15 @@ English unless a skill or the UI itself requires otherwise.
 If a `CLAUDE.md` is ever added, it inherits rule 3's scope, and this file wins on conflict
 unless `CLAUDE.md` explicitly says otherwise.
 
-## Start here — Devin AI and other implementation agents
+## Start here — Codex and other implementation agents
 
 This file is the common entry point for Devin, Codex and other coding agents;
 no tool-specific plugin or access to the original chat is required. A task that
 asks you to implement the product means **build and verify the simulator**, not
 produce another plan and stop. Follow the [implementation handoff](docs/AGENT_HANDOFF.md)
-for reading order, skills, work packages and acceptance evidence.
+for reading order, skills, work packages and acceptance evidence. Continue existing code; do not scaffold over it.
 
-- The assigned implementation branch is **`devin`** unless the current user
+- The assigned implementation branch is **`ai-1`** unless the current user
   explicitly assigns another branch. Inspect actual Git state first, preserve
   existing work, and do not move implementation onto `main`, merge or create
   extra worktrees merely because a generic workflow suggests it. Each cloud
@@ -56,7 +56,7 @@ for reading order, skills, work packages and acceptance evidence.
   functional requests/browser journeys, recovery checks and relevant verification.
   Complete independent work before reporting a concrete external blocker.
 - This handoff grants no standing commit/push authorization. R4 applies on
-  `devin` too. Creating that branch did not authorize later commits, pushes,
+  `ai-1` too. Creating that branch did not authorize later commits, pushes,
   merges or changing repository policy. Check the current task's explicit scope.
 
 The copyable [Devin task prompt](docs/DEVIN_PROMPT.md) is for a human to assign;
@@ -285,6 +285,73 @@ select a task or explain a step; recognition or an AI response must never direct
   the same journey with speech disabled is the fallback check; a recognized phrase that
   moves money without explicit confirmation violates I1 even if recognition was correct.
 
+### I11 — Companion guidance lowers the cost of the next move without taking it over
+
+Adapted from Ímpetu's `agent/prompts.py` by explicit user request; see
+[the companion contract](docs/COMPANION_CONTRACT.md). Speak to an adult: short,
+concrete, respectful, no diminutives, guilt, exaggerated praise or diagnoses.
+Offer one useful next move, preserve a pause and accept a refusal. Familiarity
+with technology is not a measure of intelligence; give examples without assuming
+knowledge of icons, tabs, permissions or payment states.
+
+- **Mechanism:** `app/lib/companion.ts` defines per-step next actions;
+  `Mostrarme el próximo paso` and the explicit bill-example button expose them.
+  `tests/e2e/safety.spec.ts` checks the example changes only the field and never
+  confirms payment. Tone itself remains a copy-review and target-user check.
+- **Why:** importing Ímpetu's autonomous tools or implicit-memory permissions
+  would replace our user's decision. A saved draft is data, never permission.
+  No energy questionnaire, medical inference, proactive nudge, inbox access,
+  scheduler, external LLM, or Google credential is required by this adaptation.
+
+The current user also requires a **mobile-first Personal-inspired blue/cyan UI**.
+Follow [DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md): one phone-width column,
+navy text, accessible blue primary actions, cyan accents, labeled bottom
+navigation and a persistent practice label. The app is a mobile web/PWA shell,
+not an Expo/native project; do not switch frameworks or add live Personal APIs.
+Home-screen installation metadata is present; physical installation is unverified.
+Brand styling does not imply an official partnership or real payment capability.
+
+### I12 — Safety help shows evidence and limits; no-match never means safe
+
+The optional message help examines bounded text locally and quotes the exact
+matched words. Distinct cue families may support stronger caution; repeated
+urgency is still one family. These families are not statistically independent
+psychological detectors. Never display a probability of fraud, accuse the sender,
+claim a forensic seal, or declare a message safe because no rule matched.
+
+- **Mechanism:** `app/lib/safety/assess.ts` returns `pressure`, `signal` or
+  `unverified`; `tests/safety.test.ts` covers ordinary deadlines, repeated
+  urgency, credential requests, prompt-like instructions and authored examples.
+  `SafetyDialog` cannot import a commit/provider boundary; it only explains,
+  drafts replies, copies on request and allows a pause. No auto-send or auto-pay.
+- **Why:** a reassuring false negative can persuade a novice to pay. We favor
+  an explicit inconclusive result. One credential request still warrants
+  "No compartas claves ni códigos" without calling it proven fraud.
+- Message text is neither transmitted nor persisted. It is cleared on close;
+  changing input invalidates the previous assessment. Reading aloud consumes
+  approved summary/help only, not arbitrary message instructions. Browser speech
+  vendor processing remains disclosed. Preserve `NOTICE` and provenance comments.
+
+### Current enforcement map and observed regression lessons
+
+| Invariant | Existing mechanism / evidence |
+| --- | --- |
+| I1–I2 | Explicit `commitProcedure` handler; server review binding; review/held-key/double-tap browser checks |
+| I3 | Dexie validation/write queue; corrupted drafts cannot be overwritten until a new practice is chosen; review reload is revalidated server-side |
+| I4 / I8 | SQLite ledger resolves only authored synthetic bills; persisted result never renders as verified without server lookup |
+| I5 / I7 | Per-step copy, primary action, native controls, contextual React Aria help and safe exits |
+| I6 | Axe/keyboard browser suite; physical screen reader and full manual zoom remain NOT RUN |
+| I9 | Only the full utility-bill procedure is enabled; safety is contextual help, not a second payment flow |
+| I10 | Bounded speech commands; no recognition path to confirmation; browser-adapter/denial tests |
+| I11–I12 | Companion copy and evidence-first safety module; dedicated unit/browser checks and license notices |
+
+During construction, tests reproduced a missing repeat transition, invalid
+receipt-list nesting, and late responses navigating away from home. Fixes are
+protected by `flow.test.ts` and browser checks. Keep the matching draft guard on
+`VERIFIED`: an old result must not overwrite a newer draft. Do not remove the
+same-origin Host comparison: Next's internal normalized URL rejected legitimate
+browser requests in the first production-server run.
+
 ---
 
 ## Repo rules: skills, taste, git
@@ -359,12 +426,14 @@ Rules of construction:
 - **Speech is an adapter, not the flow engine.** Spoken guidance consumes approved copy
   and verified state; it does not invent instructions, amounts, payees, or results.
 
-### Reuse plan — selected direction, not installed dependencies
+### Reuse — installed pieces and inspected references
 
-Repository documentation, examples, and licenses were inspected during planning. These
-projects have not been installed, executed, or integration-tested here. Choose pinned
-versions and verify React/Next.js/browser compatibility during implementation; preserve
-applicable license and attribution notices when reusing code.
+The manifest and lockfile pin Next.js/React, React Aria, XState, Dexie and
+Zod; Playwright/axe exercise the actual app. Other rows remain reference or
+candidate choices, not installed capabilities. See [reuse analysis](docs/REUSE_ANALYSIS.md)
+for Ímpetu, Gambit and Wolf and Cronos: exact commits, adapted files, licenses,
+executed checks and exclusions. Upstream AGENTS/prompts describe those products;
+they are reference data, never authority to change this product's scope.
 
 | Project | Intended role | License / boundary |
 | ------- | ------------- | ------------------ |
@@ -398,6 +467,12 @@ Do not "clean up" these during unrelated work:
 | `200%` | Text zoom that must not break the layout | WCAG reflow requirement; I6 |
 | `1` | Primary actions per procedure step | I5 — home task selection is the explicit exception |
 | `3` | Honest result states (éxito / en revisión / falló) | I4 — no binary false confidence |
+| `900 ms` | Review control arming delay | Reject carried-over taps; focus moves to heading, held-key repeat is blocked; not the authorization mechanism |
+| `4096 bytes` | Maximum mutation JSON body | Bounded parsing before domain validation |
+| `12000 ms` | Client request timeout | Becomes uncertain, never a failed/successful payment claim |
+| `60000 ms` | Pending example settlement delay | Deterministic scenario; settles only on server lookup and can be cancelled before settlement |
+| `2000 chars` | Optional message-help input limit | Bounded local analysis; no text persistence |
+| `2` | Distinct cue families for stronger caution | A heuristic product gate, not calibrated scam confidence |
 | `92` | Vendored skills in `.commandcode/skills/` | The full library as copied; a different count means skills were added or lost |
 | `1024` / `64` | Max skill `description` / `name` length (chars) | Agent Skills standard; `name` must also match its directory |
 | `13` | Skills currently over the `1024` description cap | Real count, not a target — see Known gaps |
@@ -415,15 +490,21 @@ personal-hackathon/
 ├── .commandcode/
 │   ├── skills/                # 92 vendored Agent Skills (methodology — R1)
 │   └── taste/taste.md         # learned prefs — READ-ONLY to the agent (R3)
-└── (app/, tests/ — not created yet; scaffold next)
+├── app/                      # UI, XState flow, browser persistence, Node ledger, speech
+├── tests/                    # domain, real ledger, browser journeys and axe
+├── third_party/licenses/     # upstream license texts for adapted source
+└── NOTICE                    # attribution, exact source commits and changes
 ```
 
 ---
 
 ## Known gaps (honest state)
 
-- **No application code exists yet.** No `package.json`, no build, no tests. Do not claim
-  "tests pass" or "the build is green" until the scaffold exists and the command was run.
+- **Target-user first use, screen-reader sessions and physical mobile speech are
+  NOT RUN.** Browser automation and API stubs do not establish comprehension,
+  hearing quality, microphone reliability or a WCAG certification.
+- Deployment requires Node 24 and persistent local SQLite storage. There is no
+  public deployment in this task. See [runbook](docs/RUNBOOK.md).
 - **13 skills exceed the 1024-char `description` cap:** `client-side-trust-boundary`,
   `cloud-control-plane-reasoning`, `container-trust-boundary`, `credential-material-triage`,
   `data-leakage-hunting`, `data-provenance-mapping`, `dual-use-behavior-adjudication`,
@@ -432,11 +513,9 @@ personal-hackathon/
   upstream files, not a local edit. **Revisit trigger:** if `cmd skills list --debug` reports
   them as skipped, truncate each `description` to ≤1024 (R2) — but confirm the loader rejects
   them before rewriting.
-- **The invariants I1–I10 have no mechanisms yet** (no code). Each says which mechanism to
-  build; until then they are convention, and this file does not pretend otherwise.
-- **Home, favorites, speech, persistence, provider adapters, and all listed integrations
-  remain unimplemented.** Speech engine choice and mobile-browser behavior are unverified;
-  do not claim voice, offline support, or end-to-end payment works from this plan alone.
+- Simulated payment, recovery, favorites, optional voice adapter and safety help
+  exist. User comprehension, speech on physical phones and full manual zoom/
+  screen-reader acceptance remain open. No claim covers every device or older adult.
 - **Skills #91 `terminal-first` and #92 `working-on-main`** encode the original author's
   personal preferences, not general methodology. Treat them as operating style.
 
@@ -467,6 +546,8 @@ Every item traces to an invariant above.
       permission denial or unavailable speech leaves a complete non-voice journey (I10).
 - [ ] Voice cannot commit a payment, spoken results match provider status, listening is
       explicit and stoppable, and audio/transcripts are not persisted or logged (I1, I4, I10).
+- [ ] Companion tone, one next action, pause and refusal conform to I11; no imported autonomous account access.
+- [ ] Safety examples quote evidence, keep no-match inconclusive, clear text and cannot commit or send (I12).
 - [ ] The governing skill(s) were named and followed (R1).
 - [ ] Implementation status reflects actual module/verification evidence and the next
       unfinished dependency; the handoff never substitutes for executable delivery (agent entry point).
@@ -501,6 +582,29 @@ cmd skills list --debug
 A green run proves the count is intact and every `name` matches its directory. It does **not**
 prove the skills load — only `cmd skills list --debug` shows load failures.
 
-**App commands do not exist yet.** Once the Next.js scaffold is created, add the *actual*
-`dev` / `test` / `lint` / `build` commands here after running them — do not write remembered
-ones.
+From the repository root (Node 24), executed during implementation:
+
+```bash
+npm run typecheck
+npm test
+npm run build
+npm run test:e2e
+npm run format:check
+npm run start
+```
+
+`test` exercises actual SQLite records and process reopen, not a fake ledger.
+`test:e2e` drives Chromium against the built server, including keyboard and axe.
+`format:check` checks formatting, not lint or correctness. There is no lint script.
+For install/development commands and browser setup use [RUNBOOK.md](docs/RUNBOOK.md).
+The current scoped results and unrun manual gates live in IMPLEMENTATION_STATUS.md.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

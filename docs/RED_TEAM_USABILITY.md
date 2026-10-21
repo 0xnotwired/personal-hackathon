@@ -142,7 +142,7 @@ Review includes the correct bill/period and recognizable account reference with
 privacy-appropriate detail. A correct amount alone does not establish the correct
 bill. Do not guess an amount or payee from speech.
 
-## Adversarial scenario matrix — all NOT RUN
+## Adversarial scenario matrix — technical subset exercised, human observation NOT RUN
 
 Automate relevant state/ledger checks and separately observe understanding on
 physical devices. Use synthetic data, consent and a stop option; never provoke
@@ -182,7 +182,9 @@ forced speech or authentication bypass is not the default remedy. Improve the
 interaction and test it; keep financial authority intact. Those interventions
 are rejected as default choices, **not experimentally falsified** as techniques.
 
-Current outcome: five design risks and twenty proposed scenarios; zero executed
-behavioral checks, zero confirmed vulnerabilities and zero confirmed usability
-failures. Requirements below have been strengthened; the risks remain open until
-implementation and observation earn a result.
+Current outcome: the five design risks remain open as human-comprehension
+hypotheses. Software tests exercise a technical subset of these twenty scenarios;
+see IMPLEMENTATION_STATUS.md for exact mapping and limits. Executed technical
+failures (repeat transition, receipt semantics, origin normalization and delayed
+responses) were reproduced and fixed. No participant result, real-device voice
+result or blanket “safe for all older adults” conclusion is claimed.

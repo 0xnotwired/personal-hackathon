@@ -1,72 +1,58 @@
-[English](README.md) · [Español](README_ES.md) · **[Arquitectura técnica](docs/ARCHITECTURE.md)**
+[English](README.md) · [Español](README_ES.md) · [Producto para el equipo](docs/PRODUCTO_EQUIPO.md)
 
-# Autonomía Digital
+# Personal · Autonomía Digital
 
 **Entendé cada paso. Decidí vos.**
 
-Proponemos un acompañante digital para personas mayores que necesitan ayuda para
-entender y practicar trámites cotidianos en un simulador completo. Combina instrucciones claras, ayuda
-por voz opcional y recuperación de errores, manteniendo las decisiones en manos
-de la persona.
+Una app móvil web para que personas mayores con muy poca familiaridad tecnológica
+practiquen trámites con calma. Diseño azul y celeste inspirado en Personal,
+indicaciones claras, un paso a la vez y voz opcional. **Es una práctica: no se mueve dinero.**
 
-## Cómo será la experiencia
+Ya funciona el recorrido de una factura ficticia de luz, gas o agua: elegir,
+ingresar un ejemplo, revisar los datos, confirmar personalmente y recibir un
+resultado verificado y un comprobante de práctica. Incluye borrador guardado,
+favoritos, recuperación al recargar, historial, rechazo, resultado en revisión
+y cancelación comprobada mientras la operación siga pendiente.
 
-La persona elige una tarea entre tarjetas grandes, pide ayuda cuando la necesita,
-revisa qué va a pasar, confirma personalmente y recibe un resultado verificado.
-Si se interrumpe el trámite, recupera su borrador. Si el estado de un pago es
-incierto, el sistema consulta qué pasó antes de permitir otro intento.
+La ayuda incorpora el tono adulto y el próximo paso concreto de Ímpetu. “Me están
+apurando para pagar” muestra frases para revisar y respuestas de ejemplo que la
+app nunca envía, con adaptaciones de Gambit y Wolf and Cronos. No encontrar señales
+no equivale a decir que un mensaje es seguro. [Análisis, fuentes y límites](docs/REUSE_ANALYSIS.md).
+No conectamos bancos, proveedores de pagos, Google ni modelos externos de IA.
 
-El primer recorrido completo será practicar el pago de una factura de servicios.
-Turnos, transporte y compras se incorporarán como simulaciones completas.
-El diseño de nuestra compañera aporta la pantalla inicial, las tarjetas y los favoritos.
-No conectamos bancos, Mercado Pago ni proveedores: los servicios se simulan dentro
-de la app. La pantalla y los comprobantes dirán que es una práctica sin dinero real.
+## Ejecutar
 
-## El valor que queremos comprobar
+Con Node 24 y npm, desde la raíz:
 
-| Necesidad | Respuesta propuesta |
-| --- | --- |
-| Entender | Explicaciones escritas y habladas sobre el paso y sus consecuencias |
-| Decidir | Confirmación explícita; la voz no puede ejecutar un pago |
-| Recuperarse | Borrador guardado, consulta del estado real y una salida útil ante errores |
+```bash
+npm ci
+npm run dev
+```
 
-Son requisitos e hipótesis por validar. El objetivo es un simulador utilizable:
-pasos, voz, datos guardados, resultados, anulación y recuperación que funcionan.
-La simulación es el alcance final, no un bloqueo pendiente de conectar proveedores.
+Para la versión de producción: `npm run build` y después `npm run start`.
+Los comandos de verificación, ejemplos de facturas y requisitos de guardado están
+en [RUNBOOK.md](docs/RUNBOOK.md). El [estado de implementación](docs/IMPLEMENTATION_STATUS.md)
+distingue pruebas ejecutadas de verificaciones pendientes.
 
-## Estado actual
+## Qué falta comprobar
 
-**Estamos en planificación: todavía faltan implementación y pruebas con usuarios.
-Las integraciones de pagos reales están fuera del alcance acordado.** Hay documentos de
-producto, arquitectura, ejecución y validación, junto con las skills del repo.
-Todavía no existe un comando para iniciar la app.
+Voz en teléfonos físicos, lector de pantalla y zoom manual completo, instalación
+desde el navegador, uso sin indicaciones por personas del público objetivo y un
+despliegue público con almacenamiento persistente. Los tests técnicos no prueban
+por sí solos comprensión ni autonomía. No presentamos la marca visual como una
+alianza oficial, ni esta app web como un binario nativo o una publicación en tiendas.
 
-El [registro de evidencia](docs/EVIDENCE_LEDGER.md) distingue lo propuesto de lo
-construido y probado. Vamos a medir comprensión y uso independiente; una opinión
-favorable no alcanza para afirmar que el producto funciona.
+## Para el equipo y las próximas IAs
 
-## Documentos para el equipo
+La rama actual es **ai-1**. No hace falta Devin. Leer [AGENTS.md](AGENTS.md) y
+[AGENT_HANDOFF.md](docs/AGENT_HANDOFF.md), inspeccionar el código y continuar lo
+pendiente. Las skills relevantes están en `.commandcode/skills/`.
 
-- **Empezar por acá:** [Resumen completo del producto en español](docs/PRODUCTO_EQUIPO.md).
-- **Qué construiremos:** [Definición de producto](docs/PRODUCT.md) y [plan por módulos](docs/ACTION_PLAN.md).
-- **Cómo lo construiremos:** [Arquitectura y repos a combinar](docs/ARCHITECTURE.md).
-- **Cómo lo comprobaremos:** [Investigación y validación](docs/VALIDATION.md).
-- **Cómo lo presentaremos:** [Estrategia del hackathon](docs/HACKATHON_PLAYBOOK.md) y [demo y pitch de 3/5 minutos](docs/DEMO_AND_PITCH.md).
-- **Referencia utilizada:** [Aplicación del libro de Alvin Chia](docs/BOOK_REFERENCE.md).
+- [Resumen completo del producto](docs/PRODUCTO_EQUIPO.md)
+- [Diseño móvil](docs/DESIGN_SYSTEM.md) y [adaptación de Ímpetu](docs/COMPANION_CONTRACT.md)
+- [Arquitectura y repos reutilizados](docs/ARCHITECTURE.md) y [plan por módulos](docs/ACTION_PLAN.md)
+- [Validación](docs/VALIDATION.md), [red team de usabilidad](docs/RED_TEAM_USABILITY.md) y [evidencia](docs/EVIDENCE_LEDGER.md)
+- [Hackathon](docs/HACKATHON_PLAYBOOK.md), [pitch de 3–5 minutos](docs/DEMO_AND_PITCH.md) y [referencia del libro](docs/BOOK_REFERENCE.md)
 
-El pitch dura entre 3 y 5 minutos según la información del usuario. No contamos
-con criterios publicados; las dimensiones de revisión propuestas son internas.
-Todavía debemos confirmar fecha, requisitos de entrega y reglas de reutilización.
-
-## Organización y referencias
-
-`AGENTS.md` define las reglas e invariantes; `docs/` reúne las decisiones y planes;
-`.commandcode/` contiene las metodologías del equipo. Los módulos de aplicación
-que aparecen en la arquitectura todavía deben crearse.
-
-Usamos *Hackathons Unboxed* como referencia para investigar, experimentar y
-presentar con evidencia. El libro no se distribuye dentro del repo y sus consejos
-no sustituyen las reglas del evento ni nuestras verificaciones.
-
-Licencia del repo: [Apache-2.0](LICENSE). Las dependencias y los recursos reutilizados
-conservan sus propias licencias. Para trabajar, leer [AGENTS.md](AGENTS.md).
+Licencia del proyecto: [Apache-2.0](LICENSE). [NOTICE](NOTICE) y `third_party/licenses/`
+conservan las atribuciones y licencias del código adaptado. No distribuimos el libro.

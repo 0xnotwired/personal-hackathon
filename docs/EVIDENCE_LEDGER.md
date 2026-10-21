@@ -24,22 +24,39 @@ may shorten the detail but may not promote confidence or widen scope.
 | ID | Claim under consideration | Current status and origin | Evidence required before stronger wording | Wording allowed now |
 | --- | --- | --- | --- | --- |
 | C01 | Product target is understood, controlled, recoverable procedures | Documented: user discussion and PRODUCT.md | New design approval if the scope changes | “Diseñamos un acompañante para…” |
-| C02 | The app completes the simulated bill flow | Blocked: no application code exists | Actual complete journey with build/run reference, ledger and checks | “El recorrido está especificado; falta implementarlo” |
+| C02 | The app completes the simulated bill flow | Observed in scope: implemented tree on ai-1; Chromium end-to-end receipt/recovery tests | Device/user evidence before expanding to independent use | “El pago de práctica funciona de principio a fin en las pruebas de navegador” |
 | C03 | The app pays a real utility bill | Outside scope by explicit user clarification; not a release blocker | Would require a separate future scope request; do not seek live integration for this product | “Es un simulador completo: no realiza pagos reales” |
 | C04 | People complete the task independently | Hypothesis H1/H4; no sessions | Versioned participant observations and honest `x/n` with assistance/stop counts | “Vamos a medir comprensión y autonomía” |
-| C05 | Voice is usable on supported phones | Hypothesis H2; no device checks | Separate physical-device input/output records and no-voice journey | “La voz es una capacidad propuesta” |
-| C06 | Reload/restart does not duplicate an operation | Specified in architecture; unimplemented | Concurrency, lost-response and process-restart checks against durable state | “El diseño exige idempotencia y reconciliación” |
-| C07 | The service is accessible | Target I6 only | axe plus keyboard, focus, screen-reader, target-size and zoom evidence scoped to version/screens | “Tenemos un objetivo de accesibilidad y un protocolo de verificación” |
-| C08 | Pending/failed/cancelled results are honestly communicated | Specified I4/I10; unimplemented | Provider-state, visible/spoken agreement and comprehension scenarios | “El producto debe distinguir estos estados” |
+| C05 | Voice is usable on supported phones | Browser adapter implemented; stubbed controls, denial and absent-API paths observed; physical speech NOT RUN | Actual mobile input/output records | “Hay voz opcional con alternativas completas; falta comprobarla en teléfonos físicos” |
+| C06 | Reload/restart does not duplicate an operation | Observed in scope: real SQLite, writer-process/replay, concurrent HTTP, lost-response and review-reload checks | Deployed host restart and additional browser/device scenarios | “Las pruebas del simulador conservan y recuperan una operación sin duplicarla” |
+| C07 | The service is accessible | Scoped axe/keyboard and limited programmatic text-enlargement checks observed; manual screen reader/full zoom NOT RUN | Full scoped manual/device acceptance and users | “Pasó las comprobaciones automáticas y de teclado incluidas; no afirmamos certificación WCAG” |
+| C08 | Pending/failed/cancelled results are honestly communicated | Provider-state/browser assertions observed; cancellation timeout stays unresolved until lookup | Spoken physical output and comprehension observations | “La app muestra el estado verificado del simulador y distingue un resultado incierto” |
 | C09 | Institutions will distribute or pay for it | Unvalidated viability hypothesis | Actual named channel/buyer discussion with permission and concrete next-step record | “Proponemos explorar un canal institucional” |
 | C10 | Official judging favors our selected dimensions | Unsupported; user reports no published criteria | Official event criteria or organizer confirmation | “Usamos estas dimensiones para revisión interna” |
 | C11 | Pitch duration is 3–5 minutes | User-supplied fact in this session | Confirm exact slot with organizer before final deck | “Preparamos versiones de 3 y 5 minutos” |
-| C12 | Open-source repositories have been integrated | Documented research only | Pinned dependencies/source notices plus working integration evidence | “Identificamos estas piezas para reutilizar” |
-| C13 | People with very low digital literacy can use it without prior coaching or unsafe misunderstanding | Design hypotheses RT01–RT05; U01–U20 all unexecuted | Unassisted first-use/transfer observations on the intended segment plus state/ledger/repeated-input checks | “El diseño contempla ese perfil; falta comprobarlo con usuarios” |
+| C12 | Open-source repositories have been integrated | Observed in scope: pinned React Aria/XState/Dexie/Zod plus attributed Ímpetu/Gambit/Wolf adaptations and tests | Recheck notices/pins on updates; no upstream cloud test inheritance | “Reutilizamos estas piezas con cambios y atribución documentados” |
+| C13 | People with very low digital literacy can use it without prior coaching or unsafe misunderstanding | Design hypotheses RT01–RT05; human observations NOT RUN, technical subset in IMPLEMENTATION_STATUS.md | Unassisted first-use/transfer observations on the intended segment plus state/ledger/repeated-input checks | “El diseño contempla ese perfil; falta comprobarlo con usuarios” |
 
-No participant result, partnership, real transaction, deployment or test pass has
-been invented or entered as completed. The public README describes an intended
-experience and clearly identifies the current planning state.
+No participant result, partnership, real transaction, physical speech result or
+public deployment is entered as completed. Technical evidence is scoped in
+[IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md); the README describes an
+implemented simulator with remaining manual/user gates.
+
+### C14 — local message help and companion adaptation
+
+Implemented and observed on authored examples: optional local rules quote matched
+Spanish pressure cues, do not declare no-match safe, clear input and cannot
+confirm payment or send a reply. Sources, exact adaptations and original-matcher
+check are recorded in REUSE_ANALYSIS.md and NOTICE. This is neither measured
+fraud-detection accuracy nor proof that older adults will interpret warnings safely.
+Allowed: “Ayuda a revisar algunas frases y propone respuestas que vos decidís usar”.
+
+### C15 — Personal-inspired mobile interface
+
+Implemented blue/cyan phone shell, labeled navigation, manifest/icons and browser
+checks. This is a user-requested visual direction, not a verified official design
+system, partnership, native binary, store release or tested physical installation.
+Allowed: “Una app móvil web con estilo azul/celeste inspirado en Personal”.
 
 ## Per-claim evidence record
 

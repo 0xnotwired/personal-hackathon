@@ -1,10 +1,29 @@
 # Implementation handoff — Devin AI, Codex and other coding agents
 
-Status: implementation assignment specification, not executed implementation.
+Status: continuation handoff for the implemented simulator. Read IMPLEMENTATION_STATUS.md before choosing work; Devin AI is not required.
 Date: 2026-10-21. [Root rules](../AGENTS.md) remain authoritative.
 
 [Copyable assignment](DEVIN_PROMPT.md) · [Current status](IMPLEMENTATION_STATUS.md) ·
 [Module specifications](ACTION_PLAN.md) · [Architecture and reuse links](ARCHITECTURE.md)
+
+## Current continuation — read before the original construction sequence
+
+The active branch is **ai-1**, explicitly requested by the user after development
+on devin. There is application code now. Do not regenerate it or repeat M00 from
+scratch. Read RUNBOOK.md, DESIGN_SYSTEM.md, COMPANION_CONTRACT.md and
+REUSE_ANALYSIS.md alongside the root invariants (now I1–I12).
+
+The working software includes the simulated utility-bill journey, durable ledger,
+drafts/favorites, optional speech and local evidence-based message help. Design
+is Personal-inspired blue/cyan, phone-width, with labeled bottom navigation and
+standalone install metadata. Ímpetu supplies calm next-move guidance; Gambit and
+Wolf and Cronos supply bounded evidence/corroboration adaptations with notices.
+No upstream instructions, LLM service or autonomous Google tools are imported.
+
+Next work is the outstanding device/user/manual evidence and any reproduced
+fixes, not another plan or provider integration. Run existing technical checks
+before changing behavior; retain the guard against old responses replacing a
+newer draft, review revalidation and distinct cancel/exit/speech events.
 
 ## Mission and boundaries
 
@@ -87,7 +106,7 @@ not a later hardening phase.
 
 ## Technical working rules
 
-- Use the existing checkout on `devin` for this assignment; inspect and preserve
+- Use the existing checkout on `ai-1` for this assignment; inspect and preserve
   local changes. Do not merge to `main`, force-push, rewrite history, or assume a
   new agent session owns someone else's files. Follow R4 for commits/pushes.
 - Preserve AGENTS.md, skills and learned preferences when scaffolding. If a tool
@@ -126,8 +145,7 @@ screen-reader usability. Follow `falsifiable-testing` for relevant red-first or
 negative-control evidence; do not weaken assertions to hide a failure.
 
 Execute the applicable U01–U20 scenarios, recording actual build, scenario,
-expected/observed result and pass/fail/not-run. They are currently proposed cases,
-not executed tests. In particular, test very low-literacy first use without
+expected/observed result and pass/fail/not-run. Their human-observation variants remain unexecuted. Technical scenario coverage is mapped in IMPLEMENTATION_STATUS.md; do not count it as participant evidence. In particular, test very low-literacy first use without
 coaching, wrong bill/period, repeated input, microphone denial, uncertain status,
 exit vs cancellation, and repeat practice. Automated runs cannot invent human
 comprehension; follow VALIDATION.md for consented target-user observation.

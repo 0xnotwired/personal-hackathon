@@ -1,80 +1,63 @@
-[English](README.md) · [Español](README_ES.md) · **[Technical architecture](docs/ARCHITECTURE.md)**
+[English](README.md) · [Español](README_ES.md) · [Team product brief](docs/PRODUCTO_EQUIPO.md)
 
-# Autonomía Digital
+# Personal · Autonomía Digital
 
 **Understand each step. Make your own decision.**
 
-Autonomía Digital is a proposed mobile-first companion for older adults who need
-help understanding and practicing everyday digital procedures. It is a complete
-simulation product with plain Spanish, optional speech and recoverable steps, keeping decisions
-with the person.
+A mobile web practice companion for older adults with very low digital familiarity.
+Personal-inspired blue/cyan UI, plain es-AR guidance, one step at a time and
+optional user-controlled voice. **Practice only: no money moves.**
 
-## The intended experience
+The implemented journey covers a synthetic light/gas/water bill: choose, enter
+an example, review server-owned details, explicitly confirm, inspect the verified
+simulation result and save a labeled receipt. It includes saved drafts, favorites,
+back/reload recovery, owned history, pending/rejected examples and verified
+cancellation of pending operations. Other procedures are visibly future work.
 
-Choose a task from large labeled cards, ask for help when needed, review what
-will happen, personally confirm, and receive a verified result. An interruption
-should not erase the draft; an uncertain payment should not trigger another charge.
+Optional message help quotes pressure cues, keeps no-match inconclusive and
+provides reply drafts without sending them. It incorporates attributed adaptations
+from [Ímpetu](https://github.com/annatchijova/impetu),
+[Gambit](https://github.com/annatchijova/gambit) and
+[Wolf and Cronos](https://github.com/annatchijova/wolf-and-cronos).
+See [source analysis and limits](docs/REUSE_ANALYSIS.md) and [NOTICE](NOTICE).
+No external LLM, bank, payment provider or Google account is needed.
 
-The first complete practice is a simulated utility-bill payment. Medical
-appointments, transport and shopping follow as complete simulations. The teammate's
-sketches inform home/favorites. No bank, payment or utility API connection is required.
-Practice mode and receipts are explicitly labeled; no actual money moves.
+## Run
 
-## What makes the proposed experience distinct
+Node 24.x and npm. From the repository root:
 
-| Need during a procedure | Intended behavior |
-| --- | --- |
-| Understand | Contextual written/spoken explanation of the next step and consequence |
-| Decide | Explicit personal confirmation; speech cannot commit a payment |
-| Recover | Retained draft, reconciled operation status and a useful error/support path |
-
-These are product hypotheses and design requirements, not measured advantages
-over competing applications. The destination is a usable simulator: its UI,
-voice, saved state, results, cancellation and repeat practice must actually work.
-It is not waiting for a real-payment integration to count as complete.
-
-## Current state and evidence
-
-**Planning stage: application implementation and user-study results are pending.
-Live financial integration is outside the agreed product scope.** The repository contains product/architecture
-documents, an execution plan and vendored agent skills. There is no runnable app
-command to copy at this stage.
-
-Behavioral claims and their required evidence are tracked in the
-[evidence ledger](docs/EVIDENCE_LEDGER.md). The study protocol measures comprehension,
-independent completion and transfer, not just whether someone likes the idea.
-
-## Read with your role in mind
-
-- **Team overview in Spanish:** [Producto para el equipo](docs/PRODUCTO_EQUIPO.md).
-- **What to build:** [Product definition](docs/PRODUCT.md) and [module action plan](docs/ACTION_PLAN.md).
-- **How it works:** [Technical architecture, authority boundaries and repository links](docs/ARCHITECTURE.md).
-- **How to learn:** [User research and validation](docs/VALIDATION.md).
-- **How to present it:** [Hackathon strategy](docs/HACKATHON_PLAYBOOK.md) and [3/5-minute demo and pitch](docs/DEMO_AND_PITCH.md).
-- **Why these methods:** [Book reference and adaptations](docs/BOOK_REFERENCE.md).
-
-The user reports a 3–5-minute pitch and no published judging criteria. Internal
-review dimensions are explicitly our own; event rules and reuse requirements
-still need confirmation.
-
-## Repository organization
-
-```text
-AGENTS.md       Product invariants and repository operating rules
-docs/           Product, architecture, execution, validation and presentation
-.commandcode/   Vendored engineering skills and read-only learned preferences
+```bash
+npm ci
+npm run dev
 ```
 
-Application/module paths in the architecture are proposed, not existing files.
-Open-source dependencies and reference projects are distinguished there; none
-has been integrated merely because it appears in the plan.
+Production path: `npm run build`, then `npm run start`.
+Checks: `npm run typecheck`, `npm test`, `npm run build`, `npm run test:e2e`,
+`npm run format:check`. [Runbook](docs/RUNBOOK.md) covers Chromium, managed-cloud
+npm cache, sample bills, persistent SQLite storage and safe demo setup.
 
-## References and license
+## Evidence and limits
 
-Alvin Chia's *Hackathons Unboxed* informs the research, experimentation and pitch
-process. [Source notes](docs/BOOK_REFERENCE.md) cite the supplied scan's pages and
-separate the book's advice from our decisions. The book itself is not distributed
-with this repository.
+[Implementation status](docs/IMPLEMENTATION_STATUS.md) records the exact executed
+checks and open gates. Browser automation is not participant research or physical
+speech validation. Real-device voice, screen reader/full manual zoom, home-screen
+installation, unassisted target-user use and public deployment remain pending.
+The manifest supports a standalone mobile-web experience; no native binary,
+app-store release, offline payment or official Personal partnership is claimed.
 
-Repository license: [Apache-2.0](LICENSE). Reused dependencies/assets retain their
-own applicable licenses and notices. Follow [AGENTS.md](AGENTS.md) before changes.
+## Continue the project
+
+Read [AGENTS.md](AGENTS.md) and the [agent handoff](docs/AGENT_HANDOFF.md) before
+changes. Current branch: **ai-1**. Devin AI is not required. Existing code is in
+`app/`, checks in `tests/`, product/architecture/research in `docs/`, methodology
+in `.commandcode/`. Do not replace the app with another scaffold.
+
+- [Product and team overview in Spanish](docs/PRODUCTO_EQUIPO.md)
+- [Mobile UI design](docs/DESIGN_SYSTEM.md) and [companion contract](docs/COMPANION_CONTRACT.md)
+- [Architecture and repository links](docs/ARCHITECTURE.md), [module plan](docs/ACTION_PLAN.md)
+- [Validation](docs/VALIDATION.md), [usability red team](docs/RED_TEAM_USABILITY.md), [claim ledger](docs/EVIDENCE_LEDGER.md)
+- [Hackathon strategy](docs/HACKATHON_PLAYBOOK.md), [3/5-minute pitch](docs/DEMO_AND_PITCH.md), [book reference](docs/BOOK_REFERENCE.md)
+
+Repository license: [Apache-2.0](LICENSE). Adapted source licenses and notices are
+retained in `third_party/licenses/` and NOTICE; installed dependencies retain their
+own licenses. The reference book is not distributed here.

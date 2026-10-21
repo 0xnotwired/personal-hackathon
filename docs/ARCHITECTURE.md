@@ -1,6 +1,6 @@
-# Autonomía Digital — proposed architecture
+# Autonomía Digital — architecture and decisions
 
-Status: **proposed, not implemented**. Date: 2026-10-21.
+Status: **implemented first flow; original target layout retained as design reference, with actual decisions below**. Date: 2026-10-21.
 
 [Module action plan](ACTION_PLAN.md) · [Product contract](../AGENTS.md) ·
 [Product definition](PRODUCT.md) · [Spanish team summary](PRODUCTO_EQUIPO.md)
@@ -27,9 +27,17 @@ Other simulated procedures follow after the first meets AGENTS.md I1–I10.
 Always display “Modo práctica — no se mueve dinero” and label practice receipts.
 No payment API, bank login, provider agreement or financial credential is needed.
 
-This is a design document. The repository currently contains product instructions
-and vendored skills, not an application, package manifest, or executable tests.
-Dependency versions and browser behavior must be verified during implementation.
+The current app uses Next.js 16.4.2 / React 19.3.1, React Aria, XState,
+Zod and Dexie (exact lockfile). Node 24 `node:sqlite` supplies the durable internal
+simulation engine in `app/lib/server/ledger.ts`; no separate provider service or
+better-sqlite3 build is required. One `/` route renders guarded procedure states,
+with thin review/operation API routes. Actual tree: app/components, app/flows,
+app/lib, app/speech and tests. Proposed paths below do not imply every path exists.
+
+The blue/cyan phone shell, bottom navigation and manifest follow DESIGN_SYSTEM.md.
+Companion and optional local safety adapters are `app/lib/companion.ts` and
+`app/lib/safety/`; they cannot authorize a payment. Source provenance and upstream
+limits are in REUSE_ANALYSIS.md and NOTICE. Executed checks: IMPLEMENTATION_STATUS.md.
 
 ## Authority and trust boundaries
 
@@ -119,12 +127,12 @@ lockfile when implementing. Preserve required notices when adapting source.
 | [Zod](https://github.com/colinhacks/zod) | Shared parsed contracts at browser/server/storage boundaries | Package; MIT |
 | [React Hook Form](https://github.com/react-hook-form/react-hook-form) | Field validation and editing, if native controlled fields become cumbersome | Optional package; MIT |
 | [Dexie](https://github.com/dexie/Dexie.js) | IndexedDB draft, favorite, and preference repository | Package; Apache-2.0 |
-| [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) | Durable local simulated-operation ledger | Newly proposed adapter dependency; verify release, license, and native build compatibility in M00 |
+| Node 24 `node:sqlite` | Durable local simulated-operation ledger | Implemented; built-in runtime API, still experimental; persistent local storage required |
 | [MSW](https://github.com/mswjs/msw) | Client HTTP timeout/error scenarios | Development/test dependency only; MIT |
 | [Playwright](https://github.com/microsoft/playwright) | Browser journeys and restart/recovery checks | Test dependency; Apache-2.0 |
 | [axe-core](https://github.com/dequelabs/axe-core) | Automated accessibility checks, via a Playwright integration | Test dependency; MPL-2.0 |
 
-The durable ledger dependency is new to this proposal: Dexie alone cannot make a
+The durable server ledger is distinct from browser drafts: Dexie alone cannot make a
 server-side operation survive a process restart or enforce cross-tab idempotency.
 SQLite is a proposed implementation behind a narrow repository interface, not an
 assertion that native modules already work in this environment.
@@ -443,14 +451,32 @@ lost response; cancellation verified by subsequent lookup; and a complete journe
 with speech unavailable. Use negative controls that bypass confirmation, delete
 idempotency enforcement, or fabricate success to show relevant tests fail.
 
-No application build, test suite, speech device check, or dependency integration
-has run for this proposal. Node/package compatibility, speech support and data
-processing, hosting persistence, and usability with older adults are open gates,
-not established capabilities. Implementation should record actual commands and
-outcomes as they become available. No external-provider gate is required for
-this simulation-only release. Software checks cannot replace [user comprehension
-and transfer between simulated bills](VALIDATION.md); successful practice is not
-evidence of an actual payment or independent real-world banking.
+Build, type checking, actual ledger/process tests and Chromium journeys have run;
+see IMPLEMENTATION_STATUS.md for counts, commands and failure/fix history.
+Physical speech, screen-reader/full zoom checks, deployment and unassisted older-adult
+observations remain open. Automated text-enlargement/reflow is not full manual
+browser-zoom validation. No real-provider integration is required for completion.
+
+### ADR-007 — Built-in SQLite and a local authoritative simulator
+
+- **Decision:** use Node 24 `node:sqlite`, not the initially proposed native npm adapter.
+- **Forces:** tested runtime already includes transactions; avoid an extra native build.
+- **Assumption:** persistent local disk and a single Node deployment; no ephemeral serverless ledger.
+- **Reversibility:** ledger factory isolates storage, so another implementation can preserve contracts.
+- **Revisit:** runtime API incompatibility, concurrent multi-host requirement or unsupported hosting.
+
+### ADR-008 — Mobile Personal styling and bounded companion/safety help
+
+- **Decision:** Personal-inspired blue/cyan phone shell with standalone manifest;
+  adapt useful Ímpetu/Gambit/CORVUS pieces into bounded local TypeScript modules.
+- **Forces:** user explicitly requested these references and mobile brand direction;
+  low digital familiarity favors one clear next action and concrete evidence.
+- **Assumption:** synthetic practice and optional local text rules suffice; do not
+  introduce live Google/payment services or claim measured classifier accuracy.
+- **Reversibility:** independent copy/rule modules and design tokens; original source
+  commits/license notices retained. No core ledger dependency on safety narration.
+- **Revisit:** target-user observations, actual brand asset requirements or false-positive
+  cases demand changes; no-match must still remain unverified.
 
 ## Repository skills applied
 

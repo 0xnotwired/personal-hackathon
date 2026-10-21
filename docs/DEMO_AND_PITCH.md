@@ -1,6 +1,6 @@
 # Demonstration, pitch and questions
 
-Status: rehearsal material, **not a claim that a demo exists**. Date: 2026-10-21.
+Status: rehearsal material for the implemented simulator; live stage rehearsal, physical speech and participant evidence remain unverified. Date: 2026-10-21.
 
 [Strategy](HACKATHON_PLAYBOOK.md) · [Product](PRODUCT.md) · [Claim register](EVIDENCE_LEDGER.md)
 
@@ -15,13 +15,26 @@ understand and control, including what happens after interruption or uncertainty
 Show that behavior. A stack diagram, chatbot conversation or grid of task icons
 cannot substitute for it.
 
-Use one fictional scenario consistently: a synthetic utility bill, “Luz Ejemplo”,
-ARS 15,000. This is not a participant quotation or a real account. The finished
+Use one fictional scenario consistently: a synthetic utility bill, “Luz del Barrio (ficticia)”,
+ARS 18.500,40, code `100200300`. This is not a participant quotation or a real account. The finished
 product uses synthetic services throughout; no live transaction is needed.
+
+## Updated mobile demonstration beat
+
+Use the Personal-inspired blue/cyan phone layout. In the 5-minute version, before
+confirmation spend 25–35 seconds on “Me están apurando para pagar”: choose the
+authored code-request example, show the quoted phrases, reveal an unsent reply,
+then return to the same review. Say: “La app señala frases para revisar. No afirma
+que detecta todas las estafas. La decisión y la confirmación siguen siendo tuyas.”
+For 3 minutes, show the smaller-step help and keep safety help for questions if
+needed. Do not sacrifice a readable payment review to fit extra features.
+
+Attribute the reused ideas/code to Ímpetu, Gambit and Wolf and Cronos; show links
+in the supporting material. Their Google/Qwen deployments and tests are not ours.
 
 ## Demonstration readiness and fallback
 
-The following is a **target sequence to implement and rehearse**. Do not present
+The following sequence is implemented in the tested browser build and still needs stage rehearsal. Do not present
 future behavior as working software. Select only a build that has passed the
 relevant checks and register its exact commit/device in the evidence ledger.
 
@@ -77,9 +90,7 @@ faster or making UI steps unreadable.
 
 ## Three-minute spoken draft
 
-Adapt the tense to the claim register before delivering. **Current planning-only
-state:** use the opening/product proposal and openly state that implementation
-and validation are pending. The demonstration/factual branches below may be used
+Adapt the tense to the claim register before delivering. The simulated journey is implemented; target-user comprehension and physical-device speech remain pending. The demonstration/factual branches below may be used
 only when earned; this file is not a finished results-based pitch.
 
 **Opening:**

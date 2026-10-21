@@ -1,6 +1,6 @@
 # Autonomía Digital — module action plan
 
-Status: **proposed work; no application modules implemented**. Date: 2026-10-21.
+Status: **implementation exists; current module evidence and remaining acceptance gates are in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md)**. Date: 2026-10-21.
 
 [Architecture, repository links and decisions](ARCHITECTURE.md) · [Product contract](../AGENTS.md) ·
 [Spanish team overview](PRODUCTO_EQUIPO.md) · [Hackathon execution](HACKATHON_PLAYBOOK.md)
@@ -19,7 +19,7 @@ simulated procedures follow only after its applicable AGENTS.md I1–I10 gates.
 Scaffolding and open ports alone do not count as completed software.
 
 The [very-low-literacy review](RED_TEAM_USABILITY.md) supplies RT01–RT05 and U01–U20,
-all unexecuted. M06 owns deliberate confirmation and distinct exit/cancel events;
+with technical coverage mapped in IMPLEMENTATION_STATUS.md and human observations still NOT RUN. M06 owns deliberate confirmation and distinct exit/cancel events;
 M08 owns permission-independent spoken help; M09 owns truthful simulation-state
 copy. R02 observes first use without coaching; M10 verifies the complete product.
 A comprehension failure is not cancelled out by a favorable completion average.
