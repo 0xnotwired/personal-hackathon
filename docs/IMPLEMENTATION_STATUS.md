@@ -142,3 +142,14 @@ instructions for the existing checkout. Saving did not publish the environment;
 review/save and publish in environment settings are still needed to activate that
 draft for later tasks. Fresh-task restoration has NOT been independently tested.
 No network allowlist or secret binding was changed.
+
+## Codespaces continuation added
+
+`.devcontainer/devcontainer.json` pins Microsoft's Node 24 image by inspected
+manifest digest, runs `.devcontainer/setup.sh` on creation and forwards private
+port 3000 by default. The setup installs missing Chromium, uses npm ci and runs
+verify with a fresh production test server (port 3000 must be free). Copilot's
+instruction file points back to AGENTS.md and repository skills. No AI/provider
+secret is embedded. Read CODESPACES.md for starting/resuming and the explicit
+unverified remote lifecycle. A local Docker pull was denied at layer download;
+no container-build or actual GitHub Codespaces launch is claimed.

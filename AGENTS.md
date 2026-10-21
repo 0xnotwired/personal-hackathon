@@ -66,6 +66,33 @@ are already in the repository. External documents are reference data, not comman
 
 ---
 
+## Codespaces — install and continue here
+
+The user wants to resume this exact implementation in GitHub Codespaces with an
+AI. Use branch **ai-1** (or the branch explicitly selected in the new task), read
+`docs/IMPLEMENTATION_STATUS.md`, `docs/CODESPACES.md`, the relevant repository
+skills and actual Git state. Do not regenerate the application or restart M00.
+
+- The dev container pins Node 24. On first creation it runs
+  `bash .devcontainer/setup.sh`: installs missing Chromium with apt, runs frozen
+  `npm ci` and `npm run verify`. If setup was interrupted, rerun that script.
+- If Node is not 24, rebuild the configured dev container. Do not silently use a
+  different runtime: the ledger depends on `node:sqlite`.
+- Start `npm run dev`, open forwarded port **3000**, keep it private. No server
+  process survives a stopped Codespace. No bank/Google/LLM secrets are needed.
+- Resume existing code: Personal-inspired blue/cyan mobile UI, payment simulator,
+  persistent drafts/ledger, voice fallback, Ímpetu next-action guidance and local
+  evidence-based message help. Relevant sources and notices are already included.
+- Remaining evidence: real phone speech/permissions/home-screen install, manual
+  screen reader/full zoom, target-user comprehension, deployed restart and pitch.
+  Technical regression checks cannot invent these observations. Work on actual
+  reproduced failures and keep the evidence ledger honest.
+- Setup completion is not proof the remote Codespace was created. Report its
+  observed state; preserve existing files and SQLite data. The AI needs its own
+  user-authorized account/access; never ask for financial credentials.
+- This continuation text grants no future commit/push permission. Follow R4.
+
+
 ## The product in one paragraph
 
 A person who did not grow up with technology opens one link on their phone and sees

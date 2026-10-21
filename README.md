@@ -61,3 +61,5 @@ in `.commandcode/`. Do not replace the app with another scaffold.
 Repository license: [Apache-2.0](LICENSE). Adapted source licenses and notices are
 retained in `third_party/licenses/` and NOTICE; installed dependencies retain their
 own licenses. The reference book is not distributed here.
+
+[Continuar en GitHub Codespaces con la IA](docs/CODESPACES.md) · [Crear Codespace en ai-1](https://codespaces.new/0xnotwired/personal-hackathon?ref=ai-1)

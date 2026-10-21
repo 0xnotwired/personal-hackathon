@@ -1,0 +1,17 @@
+{
+  "name": "Personal - Autonomía Digital",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:5.2.3-24-bookworm@sha256:16eb68aa0d17eedaaf2566b180854fe4e506478e35aadf790fb02aa089024f13",
+  "remoteUser": "node",
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": { "label": "Autonomía Digital", "onAutoForward": "openBrowser", "protocol": "http" }
+  },
+  "remoteEnv": { "CHROMIUM_PATH": "/usr/bin/chromium" },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": ["GitHub.copilot-chat", "esbenp.prettier-vscode"],
+      "settings": { "editor.defaultFormatter": "esbenp.prettier-vscode", "editor.formatOnSave": true }
+    }
+  }
+}

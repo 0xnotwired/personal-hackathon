@@ -8,6 +8,8 @@ Date: 2026-10-21. [Root rules](../AGENTS.md) remain authoritative.
 
 ## Current continuation — read before the original construction sequence
 
+For GitHub Codespaces installation and continuation, first use [CODESPACES.md](CODESPACES.md) and the Codespaces section of AGENTS.md.
+
 The active branch is **ai-1**, explicitly requested by the user after development
 on devin. There is application code now. Do not regenerate it or repeat M00 from
 scratch. Read RUNBOOK.md, DESIGN_SYSTEM.md, COMPANION_CONTRACT.md and

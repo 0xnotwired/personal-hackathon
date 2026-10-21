@@ -56,3 +56,5 @@ pendiente. Las skills relevantes están en `.commandcode/skills/`.
 
 Licencia del proyecto: [Apache-2.0](LICENSE). [NOTICE](NOTICE) y `third_party/licenses/`
 conservan las atribuciones y licencias del código adaptado. No distribuimos el libro.
+
+[Continuar en GitHub Codespaces con la IA](docs/CODESPACES.md) · [Crear Codespace en ai-1](https://codespaces.new/0xnotwired/personal-hackathon?ref=ai-1)
