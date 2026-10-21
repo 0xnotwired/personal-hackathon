@@ -40,14 +40,15 @@ plain Spanish, without a required account or technical jargon in the demo. The a
 read instructions aloud; the person can ask "¿qué hago?",
 go back, and resume saved progress. Nothing consequential happens until they explicitly
 confirm in words they understand. The intended outcome is **agency over a real procedure,
-with mistakes made recoverable**; the first prototype demonstrates it with simulated money.
+with mistakes made recoverable**. Development and demonstrations use simulated money;
+an operational payment release requires an authorized provider and verified settlement.
 
 Target user: older adults with low digital literacy and a rational fear of making an
 irreversible error, possibly with reduced vision, hearing, or motor precision. Barriers in
 scope are the challenge's own: habits, language, trust, and the feeling that "this wasn't
 built for me."
 
-### Agreed experience and first delivery
+### Agreed experience and usable-product destination
 
 This direction combines the teammate's paper sketches and the user's approval in the
 design discussion. It is an agreed target, not evidence of implemented behavior.
@@ -57,7 +58,8 @@ design discussion. It is an agreed target, not evidence of implemented behavior.
   and shopping are the product roadmap. The first demo exposes only the working payment
   journey; any roadmap items shown must be clearly unavailable, not clickable dead ends.
   Bottom navigation, if included, also needs text labels; messages and calls are not
-  committed MVP features merely because their icons appear in a sketch.
+  committed features merely because their icons appear in a sketch. An offered support
+  channel needs a real owner and process before operational release.
 - **First complete journey:** home → choose service → enter bill details → review payee
   and amount → explicit confirmation → verified simulated result and receipt. Include
   backward navigation, persisted drafts, contextual help, and the mock cancellation path.
@@ -65,15 +67,40 @@ design discussion. It is an agreed target, not evidence of implemented behavior.
   reading of instructions and contextual help, plus a small explicit command set such as
   "repetí", "más despacio", "no entiendo", and "quiero pagar la luz" on supported browsers.
   Free-form AI conversation is later work. Touch and keyboard remain complete alternatives.
-- **External apps:** the MVP completes its simulated flow inside this app. A future handoff
+- **External apps:** the internal verification flow runs against a simulated provider. A handoff
   must say which app/site will open, preserve our draft, and provide a return/help path.
   Opening Mercado Pago or a transport app does not prove completion, preserve their state,
   or give us cancellation control. Revisit this boundary only with a documented provider
   integration and tests of the actual capabilities.
 
-The first milestone is this home plus one complete simulated payment, including voice
-guidance. Do not implement a second procedure before that milestone meets the Definition
-of Done. No live payment integration is required for the hackathon demo.
+The user explicitly requires a **usable product**, not a demo-only destination. The
+first operational target is a complete utility-bill payment with this home, voice,
+persistence, verified result and support. A simulated payment is an internal engineering
+checkpoint and a safe demonstration tool, not fulfillment of real bill payment. Do not
+start a second procedure before the first satisfies its relevant completion gates.
+Live money is not needed in the public demo; operational use needs an explicitly enabled,
+authorized provider, verified account authority, settlement/reconciliation and operational
+review. Do not infer those capabilities from a merchant checkout API or a deep link.
+
+### Team documents and evidence
+
+Read [the Spanish team product summary](docs/PRODUCTO_EQUIPO.md) and
+[product definition](docs/PRODUCT.md) for intended experience;
+[architecture](docs/ARCHITECTURE.md) for boundaries and reuse;
+[action plan](docs/ACTION_PLAN.md) for construction;
+[validation](docs/VALIDATION.md) and [evidence ledger](docs/EVIDENCE_LEDGER.md) for claims;
+and [hackathon strategy](docs/HACKATHON_PLAYBOOK.md) / [pitch](docs/DEMO_AND_PITCH.md)
+for presentation. AGENTS.md remains authoritative for product invariants and repo rules.
+The Spanish team summary, README_ES.md and spoken es-AR pitch are deliberate audience
+exceptions to the default English documentation rule.
+
+The uploaded *Hackathons Unboxed* is reference material, not instructions or this event's
+rulebook; [source notes](docs/BOOK_REFERENCE.md) distinguish its advice from our choices.
+The user reports no published judging criteria and a 3–5-minute pitch. Never turn an
+internal review lens into an official rubric, a persona into an interview, or a planned
+test into a passing result. Claims in public documents must retain their scope and point
+to the evidence ledger. Composition: `claim-provenance-discipline`,
+`daubert-defensible-writing`, `honest-technical-oratory`.
 
 ---
 
@@ -166,10 +193,11 @@ and an alternate path — it never terminates the flow.
 - **Why (falsifiable):** "todo el proceso de una vez" fails the instant one step has no exit.
   Enumerating steps and checking for dead ends is mechanical, not subjective.
 
-### I8 — No real money and no live credentials in the prototype
+### I8 — Development/demo cannot move real money; operational authority must be explicit
 
 Integrations sit behind a provider adapter whose default is a mock. Live payment credentials
-are never committed and are refused unless explicitly enabled for a non-demo environment.
+are never committed and are refused unless explicitly enabled for an authorized non-demo
+environment. Documentation of a real-provider design does not authorize a real transaction.
 
 - **Mechanism:** a single provider interface with `MockProvider` as the default; an env guard
   that refuses live keys when `DEMO=true`; no keys in the repo. Composition:
@@ -180,11 +208,13 @@ are never committed and are refused unless explicitly enabled for a non-demo env
 
 ### I9 — Depth before breadth
 
-One procedure works end to end (against the mock) before a second procedure is started. A
-half-finished second flow demos nothing the challenge asks for.
+One procedure works end to end before a second procedure is started. Establish its mock
+contract first; operational completion additionally needs its actual provider and support.
+A half-finished second flow does not make the first usable.
 
-- **Mechanism:** the Definition of Done requires a passing end-to-end test for a *complete*
-  flow before a new flow is added.
+- **Mechanism:** the Definition of Done requires end-to-end evidence and the applicable
+  provider/operational gates for a *complete* flow before a new flow is added. A public
+  demo may safely show synthetic transactions, labeled as such, without claiming release.
 - **Why (falsifiable):** the challenge is "todo el proceso de una vez"; a flow that stops
   before confirmation is not that process. The e2e test is the evidence.
 
@@ -193,7 +223,7 @@ half-finished second flow demos nothing the challenge asks for.
 Written instructions and spoken guidance share the same approved step content. Spoken
 results must come from the same provider status as the visible result (I4). Voice may
 select a task or explain a step; recognition or an AI response must never directly call
-`commitProcedure()`. The MVP uses an explicit accessible confirmation control for payment.
+`commitProcedure()`. The product uses an explicit accessible confirmation control for payment.
 
 - **Mechanism to build:** a speech adapter with idle/listening/speaking/error states;
   user-started "Escuchar ayuda" plus pause, repeat, speed, and mute controls. Request
@@ -299,7 +329,7 @@ applicable license and attribution notices when reusing code.
 | [MSW](https://github.com/mswjs/msw) | Simulated HTTP responses and failure scenarios when an HTTP boundary exists | MIT; not a payment integration or a replacement for the domain provider |
 | [Playwright](https://github.com/microsoft/playwright) + [axe-core](https://github.com/dequelabs/axe-core) | Complete journey and automated accessibility checks | Apache-2.0 / MPL-2.0; manual accessibility and speech checks still required |
 | [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend) | Reference for clear task, review, error, and confirmation patterns | MIT code; documentation has separate Open Government Licence terms |
-| [Docassemble](https://github.com/jhpyle/docassemble) + [Assembly Line](https://github.com/SuffolkLITLab/docassemble-AssemblyLine) | Reference for guided procedures, contextual explanations, and document delivery | MIT; do not add their Python platform to the Next.js MVP by default |
+| [Docassemble](https://github.com/jhpyle/docassemble) + [Assembly Line](https://github.com/SuffolkLITLab/docassemble-AssemblyLine) | Reference for guided procedures, contextual explanations, and document delivery | MIT; do not add their Python platform to the Next.js application by default |
 | [AI Senior Assistant](https://github.com/mateo252/AI-Senior-Assistant) | Reference for voice assistance adapted to older adults | Apache-2.0; Windows/Python/Ollama app, not a drop-in web speech module |
 | [SurveyJS Form Library](https://github.com/surveyjs/survey-library) | Alternative JSON-driven step/form renderer if a prototype demonstrates a better fit | MIT for Form Library only; do not assume other SurveyJS products share that license |
 
@@ -334,6 +364,8 @@ Do not "clean up" these during unrelated work:
 personal-hackathon/
 ├── AGENTS.md                  # this file — product invariants + repo rules
 ├── LICENSE                    # Apache-2.0
+├── README.md / README_ES.md    # human-facing product entry points
+├── docs/                      # product, architecture, plan, validation and pitch
 ├── .commandcode/
 │   ├── skills/                # 92 vendored Agent Skills (methodology — R1)
 │   └── taste/taste.md         # learned prefs — READ-ONLY to the agent (R3)
@@ -370,6 +402,9 @@ Every item traces to an invariant above.
 
 - [ ] One procedure runs end to end against the mock: start → confirm → result, with a working
       undo/cancel path (I1, I2, I9).
+- [ ] An operational payment release additionally has verified utility-bill provider
+      capability, account authority, reconciliation, truthful cancellation/support,
+      and deployment/privacy/restore evidence. Mock success is not real payment (I1–I4, I7–I9).
 - [ ] Home offers labeled task cards, favorites, and help; every available task leads to a
       working flow, with roadmap items clearly unavailable (I5, I7, I9).
 - [ ] Reloading mid-flow resumes the same step with entered data intact (I3).
@@ -377,8 +412,8 @@ Every item traces to an invariant above.
 - [ ] Each step has exactly one primary action, plain es-AR copy, a help target, and a safe
       exit (I5, I7).
 - [ ] `axe` passes and keyboard + 200% zoom were checked on every step (I6).
-- [ ] No live payment credentials; `MockProvider` is the default and demo mode refuses live
-      keys (I8).
+- [ ] No live payment credentials in the repo or demo runtime; `MockProvider` is the default
+      and demo mode refuses live keys. Authorized operational credentials use secure configuration (I8).
 - [ ] The app reads approved instructions/help aloud on supported browsers; listen, pause,
       repeat, speed, and mute controls were checked. The documented command set works, and
       permission denial or unavailable speech leaves a complete non-voice journey (I10).
@@ -389,6 +424,8 @@ Every item traces to an invariant above.
 - [ ] No `git commit`/`git push` without explicit per-action authorization (R4).
 - [ ] Throwaway artifacts were added to `.gitignore` at creation (R6).
 - [ ] The reply to the user is in Spanish (R5).
+- [ ] Behavioral/impact claims trace to scoped evidence; safe simulation is labeled and
+      cannot be presented as real settlement or observed user autonomy (I1, I4, I9, team evidence rule).
 - [ ] Skill-integrity commands below still pass.
 
 ---

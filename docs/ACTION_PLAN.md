@@ -2,15 +2,19 @@
 
 Status: **proposed work; no application modules implemented**. Date: 2026-10-21.
 
-[Architecture, repository links and decisions](ARCHITECTURE.md) · [Product contract](../AGENTS.md)
+[Architecture, repository links and decisions](ARCHITECTURE.md) · [Product contract](../AGENTS.md) ·
+[Spanish team overview](PRODUCTO_EQUIPO.md) · [Hackathon execution](HACKATHON_PLAYBOOK.md)
 
 ## Destination and delivery order
 
 Build an accessible digital companion that speaks, listens when invited, and
-helps a person complete procedures independently. The agreed first milestone is
-one complete simulated bill payment with the teammate's home/favorites design,
-recovery, help, confirmation, cancellation, and voice. A second procedure starts
-only after that milestone satisfies AGENTS.md I1–I10.
+helps a person complete procedures independently. The user explicitly requires
+a **usable product**, with the teammate's home/favorites design, recovery, help,
+confirmation, truthful results, provider-supported cancellation, support and voice.
+The first operational capability is actual authorized utility-bill payment.
+The simulated journey is an internal verification checkpoint; M00–M10 alone do
+not fulfill operational bill payment. A second procedure starts only after the
+first satisfies its applicable AGENTS.md I1–I10 gates.
 
 The modules below are construction units, not independent release promises.
 Scaffolding, a screen, or an open port alone is not a completed product level.
@@ -19,12 +23,30 @@ module that needs them; none is deferred to a later “hardening” phase.
 
 | Product level | Observable outcome | Completion gate |
 | --- | --- | --- |
-| L1 — guided simulated payment | A person starts at home, pays a synthetic bill, hears/reads help, resumes interruptions, sees a verified result, and can cancel the simulated operation | M00–M10 plus integrated review and evidence; this is the first deliverable |
+| L1 — usable guided bill payment | A person starts at home, completes an authorized utility-bill payment, hears/reads help, resumes interruptions, sees a reconciled result/receipt and has truthful cancellation/support paths | R00–R03 plus M00–M14 and all provider/usability/operational gates; the mock checkpoint alone is insufficient |
 | L2 — second complete procedure | A chosen appointment OR transport journey works through the same accessible shell and contracts | Start only after L1; document its own provider and authority boundary |
-| L3 — supported external integration | A specific external provider can be used with honest status, return and cancellation semantics | Real authorization, settlement, privacy and recovery design reviewed before implementation |
+| L3 — broader supported services | Additional complete procedures/providers can be operated and supported without weakening existing invariants | Provider-specific authority, settlement/booking, privacy, support and recovery verified per service |
 
 Do not fill the home with nonfunctional L2/L3 buttons. If time is limited, finish
 L1 with its invariants intact rather than presenting incomplete extra journeys.
+If actual constraints prevent that, report the unfinished product honestly; do
+not relabel a simulation an operational release to meet a presentation deadline.
+
+## Product, evidence and presentation workstreams
+
+The following work starts alongside engineering, not after coding. Details live
+in the linked protocols so this plan does not duplicate their source of truth.
+
+| ID | Work package | Deliverable and gate | Timing / dependency |
+| --- | --- | --- | --- |
+| R00 | Shared product and event constraints | PRODUCT.md, known 3–5-minute pitch, unknown deadline/team/reuse rules assigned to owners | Before discretionary feature work; do independent checks while event facts are pending |
+| R01 | Discovery and risky assumptions | E01/E05/E06 in VALIDATION.md: comprehension, real-device voice and actual provider capability | Begin immediately; provider choice and copy depend on observations |
+| R02 | Task evidence and iteration | Observed independent/assisted/stopped outcomes, comprehension, second-bill transfer, versioned retest | Early sketch feedback, then actual integrated application; no invented results |
+| R03 | Claims, presentation and submission | EVIDENCE_LEDGER.md, timed 3/5-minute script, disclosed fallback, tested artifact links and reuse notices | Draft narrative early; factual claims released only after their evidence exists |
+
+No official judging rubric is assumed. Roles, relative checkpoints and risks are
+in HACKATHON_PLAYBOOK.md. There is no fabricated hours estimate while the actual
+deadline/team capacity is unknown.
 
 ## Dependency map
 
@@ -50,6 +72,15 @@ flowchart LR
   M07 --> M10[Delivery evidence and runtime]
   M08 --> M10
   M09 --> M10
+  R01[Early provider capability research] --> M11[Verified real-provider contract]
+  M05 --> M11
+  M11 --> M12[Financial authority and live reconciliation]
+  M03 --> M12
+  M10 --> M13[Supported production operation]
+  M12 --> M13
+  M13 --> M14[Usable product release and honest submission]
+  R02[User comprehension and transfer evidence] --> M14
+  R03[Claims and timed pitch] --> M14
 ```
 
 Checks belong to their modules even though the combined delivery evidence is
@@ -288,7 +319,7 @@ must not unlock a “pay again” path while the original attempt is unresolved.
 **Invariants:** I1, I2, I4, I7, I10.
 **Skills:** `secure-by-construction`, `non-overwhelming-ux`, `falsifiable-testing`.
 
-## M10 — L1 delivery evidence and repeatable runtime
+## M10 — Integrated internal verification and repeatable runtime
 
 **Create:** combined e2e scenarios, a manual accessibility/speech checklist,
 sanitized evidence summary and tested startup/deployment documentation.
@@ -312,21 +343,126 @@ Observe an older adult or representative user trying the task with synthetic
 data and consent; record where help was needed without collecting financial
 details. Technical checks do not establish comprehension or confidence.
 
+Use the planned definitions/cohort and assistance accounting in VALIDATION.md;
+do not introduce user testing for the first time here. This checkpoint verifies
+the assembled mock-backed application. It is not the operational product gate.
+
 **Skills:** `destination-driven-construction`, `secure-by-construction`,
 `falsifiable-testing`, `git-discipline` and the frontend accessibility skills.
+
+## M11 — Verify and contract a real utility-bill provider
+
+**Create:** a provider capability matrix and protocol/authorization contract,
+followed by a live-adapter design only when the capability is established.
+
+**Depends on:** R01 starts independently now; adapter implementation depends on
+M01, M04 and M05. Follow ADR-005 in ARCHITECTURE.md.
+
+**Tasks:** verify bill/debt lookup, intended user/account authority, actual utility
+settlement, idempotency/lookup semantics, receipts, pending handling, callbacks
+and cancellation/refund limits. Confirm jurisdiction, onboarding/agreements,
+fees and test access. Do not assume merchant payment collection pays a utility
+bill or that opening an external app proves completion.
+
+**Exit evidence:** authoritative provider documentation plus approved sandbox
+behavior establish every required capability. Record unsupported/unknown fields
+and the path to resolve them. If no integration exists, mark operational payment
+blocked and retain that limitation in all product/pitch claims. This is not a
+request to put secret values in the repo or to run a real-money transaction.
+
+**Invariants:** I1, I2, I4, I7–I9.
+**Skills:** `secure-by-construction`, `decision-record-discipline`,
+`claim-provenance-discipline`, `falsifiable-testing`.
+
+## M12 — Financial authorization and durable live reconciliation
+
+**Create:** provider-specific authorization/onboarding flow, isolated live adapter,
+durable intent/outbox/reconciliation path and authentic callback handling where
+the selected provider uses callbacks. Keep the default demo factory fail-closed.
+
+**Depends on:** M11, M03–M06. The provider contract determines authentication and
+state mapping; anonymous demo cookies do not grant real-account authority.
+
+**Tasks:** implement supported consent/account access without collecting bank
+passwords/PINs. Persist a stable intent before issuing an external request; respect
+the provider's idempotency and settlement semantics. Recover a crash between
+request and response without another charge. Verify callback authenticity/replay
+ordering per actual provider specifications, and bound retries/escalation.
+Explain real cancellation limits before confirmation. Resolve any conflict with
+I2 explicitly rather than treating mock undo as a real-provider feature.
+
+**Exit evidence:** provider-approved sandbox contract/integration checks cover
+authorization refusal/expiry, wrong owner, replay, double submit, timeout, callback
+duplication and crash/restart reconciliation. No secret reaches the browser/logs.
+Obtain a distinct authorized operational verification before any real transaction;
+neither this documentation task nor a passing sandbox test supplies that consent.
+
+**Invariants:** I1–I4, I6–I8, I10.
+**Skills:** `secure-by-construction`, `secret-lifecycle-discipline`,
+`decision-record-discipline`, `falsifiable-testing` and accessibility skills.
+
+## M13 — Operable service, support and privacy
+
+**Create:** deployment/configuration instructions, monitoring and backup/restore
+runbooks, unresolved-operation support queue/process, privacy disclosures,
+data-retention/deletion procedures and named incident/support responsibilities.
+
+**Depends on:** M10–M12; plan the real hosting/support constraints during R00/R01.
+
+**Tasks:** establish HTTPS, durable shared operation state, migrations, provider
+secret management, safe monitoring and support escalation. Define what happens
+when a user cannot recover a session, a provider is down or a payment remains
+pending. Verify a support channel actually has an operator; do not ship a dead
+call/message icon. Confirm provider/privacy/legal obligations for the real service.
+Keep diagnostics free of sensitive bill, audio and credential content.
+
+**Exit evidence:** actual production-like restart, backup restore plus reconciliation,
+provider outage and support escalation drills. A second team member can run the
+service and explain safe incident actions. Release evidence includes the supported
+device matrix and verified processing route for voice. Hosting and support costs
+use sourced assumptions, not invented free-tier or profitability claims.
+
+**Invariants:** I1–I4, I6–I10.
+**Skills:** `secure-by-construction`, `decision-record-discipline`,
+`claim-provenance-discipline`, `falsifiable-testing`.
+
+## M14 — Usable-product acceptance and submission
+
+**Create:** a release acceptance record tied to build/provider/device versions,
+actual user/technical outcomes and current operational owners, plus final pitch
+materials selected from DEMO_AND_PITCH.md.
+
+**Depends on:** R00–R03 and M00–M13. A presentation submission may have a different
+date from operational release; never collapse their acceptance records.
+
+**Tasks:** perform integrated adversarial review, required software verification,
+manual accessibility/voice checks and comprehension/transfer review. Confirm all
+enabled features operate and that the real declared bill-payment outcome is
+supported. Audit claim provenance, licenses, artifact links and event requirements.
+Rehearse both 3- and 5-minute versions with the actual demo and a disclosed fallback.
+
+**Exit evidence:** every applicable product gate in PRODUCT.md has an observed
+result or an explicit release blocker. No placeholders, fabricated participant
+metrics or unlabeled mock payments enter the pitch. A real operational release
+cannot pass while its required provider/support gate is open. If a hackathon
+submission precedes release, state exactly what works and what remains blocked.
+
+**Invariants:** I1–I10 plus the product/evidence rules in AGENTS.md.
+**Skills:** `destination-driven-construction`, `falsifiable-testing`,
+`honest-technical-oratory`, `daubert-defensible-writing`, `claim-provenance-discipline`.
 
 ## Acceptance map and review cadence
 
 | Product rule | Primary modules | Required evidence |
 | --- | --- | --- |
 | I1 — person decides | M05, M06, M08 | No commit from route entry, restore, suggestion or voice; explicit confirmation tested |
-| I2 — confirmation and cancellation | M04, M05, M09 | Server-bound review; persisted cancellation and capability checks |
+| I2 — confirmation and cancellation | M04, M05, M09, M11, M12 | Server-bound review; persisted mock cancellation; actual provider capability/limits resolved before operational release |
 | I3 — resume progress | M03, M06, M07 | Reload/back/close restore data; errors and stale-tab conflicts are visible |
-| I4 — honest results | M04–M06, M09 | Provider authority, restart/reconciliation, spoken/visible agreement |
+| I4 — honest results | M04–M06, M09, M11–M14 | Provider authority, restart/reconciliation, spoken/visible agreement; no simulation promoted to real settlement |
 | I5 — clear action and language | M01, M02, M06, M07 | Enumerated step schema, copy review and home exception |
 | I6 — accessibility | M02 and every rendered module | axe plus manual keyboard, screen reader, target-size and zoom checks |
-| I7 — help and safe exits | M01, M02, M06–M09 | Step enumeration and recoverable failure journeys |
-| I8 — simulation only | M00, M04, M05, M10 | Factory/env guard and no live SDK/credentials |
+| I7 — help and safe exits | M01, M02, M06–M09, M13 | Step enumeration, recoverable failure journeys and an owned operational support route |
+| I8 — explicit environment/financial authority | M00, M04, M05, M10–M13 | Demo factory guard; operational provider/account authority separately verified; no committed secrets |
 | I9 — depth before breadth | L1 gate | One fully evidenced payment before another procedure begins |
 | I10 — optional bounded voice | M08, M09 | Real-device speech evidence; no-voice journey; no voice commit or stored recordings |
 
@@ -343,10 +479,12 @@ design skills and their links are listed in the architecture document.
 
 ## Immediate next action
 
-Start M00 and the M01 contracts, resolve the SQLite/runtime gate, then establish
-M02–M05 before wiring the first complete payment. Voice capability research can
-start early; it must not change payment authority or delay the non-voice path.
+Start R00/R01 and M00/M01 together: understand the observed obstacle, verify
+provider/device feasibility and establish the runtime/contracts. Then establish
+M02–M05 and wire the complete internal journey while recording research outcomes.
+Continue through M11–M14 to actual usable operation. Do not defer provider research
+until after the simulator or quietly drop it to fit a demo deadline.
 
 No app commands are claimed as tested here. This plan creates documentation only.
-Commit/push requires a new explicit instruction for those actions under AGENTS.md
-R4; the previous documentation push was not standing authorization.
+Commit/push is per-action under AGENTS.md R4. Documentation status and application
+readiness are independent; creating this plan does not implement its modules.

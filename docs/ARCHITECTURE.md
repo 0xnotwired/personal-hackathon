@@ -2,7 +2,8 @@
 
 Status: **proposed, not implemented**. Date: 2026-10-21.
 
-[Module action plan](ACTION_PLAN.md) · [Product contract](../AGENTS.md)
+[Module action plan](ACTION_PLAN.md) · [Product contract](../AGENTS.md) ·
+[Product definition](PRODUCT.md) · [Spanish team summary](PRODUCTO_EQUIPO.md)
 
 ## Product and observable behavior
 
@@ -12,7 +13,7 @@ sketches supply the home: large labeled task cards, favorites, visible help, and
 a microphone. A task opens a guided journey rather than merely redirecting to
 an unfamiliar application.
 
-First complete delivery:
+Internal verification journey, using a simulated provider:
 
 > “¿Qué necesitás hacer?” → “Pagar una factura” → choose service → enter bill
 > details → review payee and amount → personally confirm → simulated provider
@@ -20,8 +21,10 @@ First complete delivery:
 
 The person can ask “¿Qué hago?”, listen to instructions, repeat or slow them,
 go back, and resume a saved draft. Every feature remains operable without voice.
-Medical appointments, transport, shopping, and live bank/payment connections
-follow only after this journey satisfies AGENTS.md I1–I10.
+The usable-product destination is an authorized, reconciled real utility-bill
+payment with support and operational readiness. The mock journey is an internal
+verification checkpoint, not that operational release. Other procedures follow
+only after the first satisfies the applicable AGENTS.md I1–I10 gates.
 
 This is a design document. The repository currently contains product instructions
 and vendored skills, not an application, package manifest, or executable tests.
@@ -40,6 +43,12 @@ Threat model before module layout:
 - The initial deployment assumes a controlled demo server and synthetic bills.
   Host compromise, real financial authorization, and external payment settlement
   are outside that delivery. Demo session isolation still applies from day one.
+
+That initial trust model applies to internal development and safe demonstrations.
+Operational release extends it with financial-account authority, provider-bound
+authentication, settlement/reconciliation, authenticated callbacks where used,
+support, monitoring and privacy controls as specified below. Anonymous demo
+sessions do not grant financial authority in that release.
 
 | Crossing | Checkpoint | Failure behavior |
 | --- | --- | --- |
@@ -295,6 +304,104 @@ audio, or transcripts. Disable financial mutation offline, retain the draft, and
 provide an explicit reconciliation/retry path after connectivity returns. A full
 offline PWA is not assumed; clearing browser data cannot be promised recoverable.
 
+## Operational payment integration and release
+
+The user requires a usable product. The architecture therefore includes this
+path now, rather than treating live execution as an optional demonstration
+enhancement. It remains **unimplemented and provider-dependent**. No new financial
+authorization is inferred from this document; demo mode remains the default.
+
+### Capability investigation before selecting a provider
+
+For each candidate, obtain authoritative documentation and approved sandbox
+evidence for bill identification/debt lookup, authorized payer/account access,
+actual utility-bill settlement, operation lookup, idempotency semantics,
+pending/failure resolution, receipts and cancellation/refund capabilities.
+Record onboarding/partnership requirements, fees and unsupported services.
+
+A merchant checkout SDK typically solves payment collection; do not assume it
+can settle a user's unrelated utility debt. An external-app handoff may be useful,
+but without trustworthy completion evidence it cannot fulfill our payment promise.
+If no provider supports the required task, operational release is blocked until
+an authorized provider/partnership exists or the product target is explicitly
+reconsidered. Do not invent an endpoint to fill this gap.
+
+### Live adapter and financial authority
+
+Keep the domain provider interface; implement a separately enabled live adapter
+only after confirming the real protocol. Real user/account authorization must use
+the selected provider's supported identity/consent mechanism, with explicit
+review of session isolation, token scope/storage/expiry and any step-up approval.
+Do not collect a banking password/PIN into our UI or treat an anonymous demo
+cookie as financial authority. The onboarding/authentication journey itself must
+meet the same clarity/accessibility standards; failure cannot strand the user.
+
+The shared operation model needs separate local request state and external
+provider state, with authoritative reference IDs, reconciliation timestamps and
+versioned status mapping. Do not expose tokens or secrets in browser bundles,
+logs, recorded demos or receipts. Live and demo data/configuration stay isolated.
+
+### Consistency across a network call
+
+SQLite and an external provider cannot share an atomic transaction. Persist an
+authorized intent and its stable idempotency/reference before issuing a provider
+request. Use the provider's supported idempotency or lookup semantics. A durable
+outbox/job/reconciliation mechanism resumes unfinished intents after a crash;
+it never creates a new charge merely because a response was lost. If the provider
+cannot support safe deduplication/reconciliation, that is a capability blocker.
+
+Where callbacks exist, verify their authenticity and replay protections according
+to that provider's actual specification; deduplicate events and reconcile their
+ordering/revisions. Bound retry frequency and attempts, then escalate unresolved
+operations to owned support. The server ledger maps verified provider facts to
+the visible and spoken states; a timeout is not permission to show failure/success.
+
+Adapt cancellation to actual provider capability. If settlement is irreversible,
+explain that before confirmation, provide correction before submit and document
+the real support/refund path. If this conflicts with a currently required undo
+capability, resolve the product/provider gate explicitly; do not claim to satisfy
+I2 by hiding the cancellation button or by reusing the mock's behavior.
+
+### Operational gates and observability
+
+Before offering real payments, demonstrate HTTPS and secure provider configuration,
+ownership/authorization checks, input bounds and mutation protection, migrations,
+durable state, a tested backup/restore and reconciliation drill, status monitoring
+and an incident/support runbook with a responsible human. Confirm the selected
+host's data persistence and network access. Do not deploy an independent SQLite
+file per ephemeral replica.
+
+Proposed provider/environment configuration requirements are documented by name,
+never secret value. Actual production configuration and transaction execution are
+separate authorized work. Appropriate provider/privacy/legal review must cover
+the real jurisdiction and relationship; this proposal is not that review.
+
+User-study metrics can initially be recorded manually in sanitized study records;
+no analytics vendor, transcript storage, sensitive event payload or new telemetry
+service is required. Developer diagnostics and research observations remain
+different data sets. The [evidence ledger](EVIDENCE_LEDGER.md) records the scope
+that each can establish.
+
+### ADR-005 — A mock is verification infrastructure, not operational completion
+
+Status: proposed, following the user's explicit usable-product requirement on
+2026-10-21. This extends ADR-001/002 and the former simulated-only first-delivery
+boundary; it does not replace their authority or persistence requirements.
+
+- **Decision / forces:** retain the safe mock by default, but add provider,
+  account-authority, reconciliation and support gates to the real payment release.
+  The product must perform its declared task rather than only demonstrate screens.
+- **Alternatives:** ship the simulator as if it paid bills (misrepresents completion;
+  its strongest argument is safe, repeatable testing); offer only an external link
+  (less integration work, but no established completion/control evidence).
+- **Assumption:** an authorized provider/partnership can support utility-bill
+  execution for the intended jurisdiction and users. This remains unverified.
+- **Reversibility / cost:** one-way-ish after provider agreements or real data
+  exist; keep provider contracts replaceable and preserve ledger semantics.
+- **Revisit trigger:** provider evidence rules out the required task, contradicts
+  the undo/confirmation contract, or imposes an inaccessible authorization flow.
+  Resolve scope with the owner rather than silently downgrade the product promise.
+
 ## Proposed decision records
 
 All records below are **proposed** on 2026-10-21. AGENTS.md remains authoritative
@@ -368,7 +475,9 @@ No application build, test suite, speech device check, or dependency integration
 has run for this proposal. Node/package compatibility, speech support and data
 processing, hosting persistence, and usability with older adults are open gates,
 not established capabilities. Implementation should record actual commands and
-outcomes as they become available.
+outcomes as they become available. The operational provider/account-authority,
+reconciliation and support gates are also open. Software checks cannot replace
+[user comprehension and transfer observations](VALIDATION.md).
 
 ## Repository skills applied
 
