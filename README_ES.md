@@ -5,7 +5,7 @@
 **Entendé cada paso. Decidí vos.**
 
 Proponemos un acompañante digital para personas mayores que necesitan ayuda para
-entender y completar trámites cotidianos. Combina instrucciones claras, ayuda
+entender y practicar trámites cotidianos en un simulador completo. Combina instrucciones claras, ayuda
 por voz opcional y recuperación de errores, manteniendo las decisiones en manos
 de la persona.
 
@@ -16,9 +16,11 @@ revisa qué va a pasar, confirma personalmente y recibe un resultado verificado.
 Si se interrumpe el trámite, recupera su borrador. Si el estado de un pago es
 incierto, el sistema consulta qué pasó antes de permitir otro intento.
 
-El primer objetivo operativo es pagar una factura de servicios de principio a
-fin. Turnos, transporte y compras se incorporarán como capacidades completas.
+El primer recorrido completo será practicar el pago de una factura de servicios.
+Turnos, transporte y compras se incorporarán como simulaciones completas.
 El diseño de nuestra compañera aporta la pantalla inicial, las tarjetas y los favoritos.
+No conectamos bancos, Mercado Pago ni proveedores: los servicios se simulan dentro
+de la app. La pantalla y los comprobantes dirán que es una práctica sin dinero real.
 
 ## El valor que queremos comprobar
 
@@ -28,13 +30,14 @@ El diseño de nuestra compañera aporta la pantalla inicial, las tarjetas y los 
 | Decidir | Confirmación explícita; la voz no puede ejecutar un pago |
 | Recuperarse | Borrador guardado, consulta del estado real y una salida útil ante errores |
 
-Son requisitos e hipótesis por validar. El objetivo es un producto utilizable:
-un recorrido simulado o una pantalla atractiva no equivalen a resolver un trámite real.
+Son requisitos e hipótesis por validar. El objetivo es un simulador utilizable:
+pasos, voz, datos guardados, resultados, anulación y recuperación que funcionan.
+La simulación es el alcance final, no un bloqueo pendiente de conectar proveedores.
 
 ## Estado actual
 
-**Estamos en planificación: todavía no hay aplicación implementada, pruebas con
-usuarios ni una integración verificada de pagos reales.** Hay documentos de
+**Estamos en planificación: todavía faltan implementación y pruebas con usuarios.
+Las integraciones de pagos reales están fuera del alcance acordado.** Hay documentos de
 producto, arquitectura, ejecución y validación, junto con las skills del repo.
 Todavía no existe un comando para iniciar la app.
 

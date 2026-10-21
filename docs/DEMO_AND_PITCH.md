@@ -16,8 +16,8 @@ Show that behavior. A stack diagram, chatbot conversation or grid of task icons
 cannot substitute for it.
 
 Use one fictional scenario consistently: a synthetic utility bill, “Luz Ejemplo”,
-ARS 15,000. This is not a participant quotation or a real account. Replace with
-actual provider-safe demonstration details only when authorized and verified.
+ARS 15,000. This is not a participant quotation or a real account. The finished
+product uses synthetic services throughout; no live transaction is needed.
 
 ## Demonstration readiness and fallback
 
@@ -38,9 +38,9 @@ The 3-minute version shows one interruption/recovery and a confirmed result.
 Reserve cancellation or a pending-result alternative for the 5-minute version or
 questions. Do not race through multiple failures that hide the core experience.
 
-For a synthetic-provider demo, keep a visible **“Demostración — sin dinero real”**
-label and say it at the point of showing the transaction. Real-payment capability
-must be discussed separately; a mock receipt does not imply live integration.
+Keep **“Modo práctica — no se mueve dinero”** visible in the finished app and
+presentation. The complete product is a practice simulator; receipts are practice
+receipts. There is no pending real-payment integration gate.
 
 Before stage time, the operator checks browser/device/audio, microphone consent,
 projector zoom, network route, server/ledger state and a fresh synthetic session.
@@ -72,7 +72,7 @@ faster or making UI steps unreadable.
 | 0:25–0:45 | What changes for the person | Written/spoken guidance, personal control, recovery |
 | 0:45–1:55 | Actual journey or disclosed recording | One concrete task and a visible interruption/recovery |
 | 1:55–2:20 | Actual evidence or honest pending status | What has been observed, in which version and sample |
-| 2:20–2:45 | Operational path and distinction | Provider capability/support and why this is more than shortcuts |
+| 2:20–2:45 | Operational path and distinction | Complete practice, repeat exercises and why this is more than shortcuts |
 | 2:45–3:00 | Contribution and close | The same clear message, not a list of future features |
 
 ## Three-minute spoken draft
@@ -119,14 +119,15 @@ selected build. Do not narrate desired behavior over a nonfunctional mockup.
 > objetivo. Definimos tareas de validación que miden si la persona entiende
 > el importe, el destinatario y el resultado, también ante un error.”
 
-**Operational path, current unverified-provider wording:**
+**Complete-product scope:**
 
-> “Para ofrecer pagos reales falta verificar una integración que efectivamente
-> pague la deuda del servicio y reconcilie el resultado. Un botón que abre otra
-> aplicación no alcanza. Ese requisito y el soporte forman parte del producto
-> utilizable que queremos entregar.”
+> “El producto es un simulador completo para practicar. No conectamos bancos ni
+> proveedores de pagos. La experiencia sí funciona: guarda el avance, registra
+> la operación de práctica, permite recuperarla y anularla, y ayuda a entender
+> qué pasó. Se puede volver a practicar sin mover dinero ni compartir contraseñas.”
 
-Replace this with provider-specific observed facts only after C03 is earned.
+Use that wording only for capabilities actually implemented and verified on the
+selected build; at today's documentation-only stage, describe it as the target.
 
 **Close:**
 
@@ -145,7 +146,7 @@ of “proponemos”; do not finish with a backlog or promise universal independe
 | 1:00–2:40 | Journey, recovery and one pending/cancel scenario | Show honest state and the real capability boundary |
 | 2:40–3:25 | User/technical evidence | Counts with scope, changed design and current test results |
 | 3:25–4:05 | Alternatives and distinction | Tutorials, existing service apps, human help; no invented competitor weaknesses |
-| 4:05–4:35 | Viability and operating responsibility | Reachable pilot channel, provider gate, costs/support as sourced facts or assumptions |
+| 4:05–4:35 | Viability and operating responsibility | Community-practice channel, simple operating costs and actual help |
 | 4:35–5:00 | Team contribution and close | Acknowledge actual work and repeat the concrete contribution |
 
 Possible short deck: problem, product/journey, demo, evidence, operating model,
@@ -158,12 +159,12 @@ appendix for contracts, cost assumptions, supported devices and source details.
 | Question | Honest answer boundary |
 | --- | --- |
 | “¿Qué hay funcionando hoy?” | Name the exact implemented build/capabilities; currently only documentation exists |
-| “¿Paga servicios reales?” | No claim until verified utility-bill capability and authorized integration exist; simulation is labeled |
+| “¿Paga servicios reales?” | No: the product is a complete simulator for practice, not a financial integration |
 | “¿Por qué otra app?” | A targeted hypothesis about understanding/control/recovery; show observed comparative evidence when available |
 | “¿Por qué no un tutorial?” | Help is tied to the active procedure/state; transfer and independent completion still need testing |
 | “¿La IA puede pagar por error?” | No free-form AI or speech authority is proposed; explicit control plus server checks must be evidenced |
 | “¿Cómo evitan pagar dos veces?” | Explain stable attempts, ledger constraints and reconciliation; cite actual race/lost-response tests when run |
-| “¿Se puede anular cualquier pago?” | No; show the selected provider's actual cancellation capability. The mock does not establish real reversibility |
+| “¿Se puede anular cualquier pago?” | The simulator annuls its own recorded practice operation; it makes no claim about real-world payments |
 | “¿Qué pasa si no hay internet?” | Preserve available local draft, block mutation, reconcile later; do not claim an offline payment |
 | “¿Y si la voz no funciona?” | A complete text/touch/keyboard path; name only the physically tested voice/browser combinations |
 | “¿Escuchan todo el tiempo?” | Explicit activation, visible listening and stop control; no background capture by design, to be tested |
@@ -172,10 +173,10 @@ appendix for contracts, cost assumptions, supported devices and source details.
 | “¿Cuántas personas lo probaron?” | Give exact completed/assisted/stopped counts and recruitment; currently zero |
 | “¿Eso prueba autonomía?” | Exploratory task comprehension/transfer only; sustained independent use requires longitudinal evidence |
 | “¿Qué hicieron ustedes y qué reutilizaron?” | Distinguish domain, copy, interaction and integration work from OSS packages; retain license notices |
-| “¿Cuánto cuesta?” | Use sourced hosting/provider/speech/support inputs, or say estimates remain open; no invented price |
+| “¿Cuánto cuesta?” | Use sourced hosting/storage/optional speech/maintenance inputs, or say estimates remain open; no invented price |
 | “¿Quién paga o distribuye?” | A candidate institutional channel is a hypothesis until a real documented commitment exists |
-| “¿Qué pasa si queda pendiente?” | Operation lookup and owned support path, without another charge; explain actual provider SLA when established |
-| “¿Quién responde cuando falla?” | Name an actual support owner/process at operational release; no imaginary call-center feature |
+| “¿Qué pasa si queda pendiente?” | Lookup of the stored simulated operation, clear next action and contextual help; no real provider SLA |
+| “¿Quién responde cuando falla?” | Show contextual help/retry/safe exit; include human contact only if actually provided |
 | “¿Por qué deberían elegirlos?” | Point to demonstrated contribution and evidence, not a promise to win or claims about competing teams |
 
 ## Rehearsal gate

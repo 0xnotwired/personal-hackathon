@@ -9,7 +9,7 @@ been executed for this protocol**. Date: 2026-10-21.
 
 Can the intended person understand and complete the supported procedure without
 someone taking over? Which obstacle actually prevents that? Is spoken help useful
-to this person? Can the chosen provider deliver the real operation? These are
+to this person? Does the simulator persist and resolve the chosen scenario? These are
 separate questions; do not answer all of them with “participants liked the app.”
 
 Use sketches to answer interaction questions cheaply. Clearly disclose any
@@ -21,6 +21,17 @@ reliability, speech recognition, data persistence or payment settlement.
 Recruit people who match the behavioral segment, including different digital
 experience and accessibility needs. Do not select only relatives who want to
 encourage the team. Record the recruitment channel and sample limitations.
+
+The target cohort must include **very low digital familiarity**, not only older
+people who already use banking apps independently. Record concrete recent help
+needs and neutral first-use observations with synthetic material; do not infer
+ability from age or a label. Report digitally experienced proxies and team runs
+separately rather than counting them as target-user successes.
+
+After consent/safety instructions, do not teach the app, point to its entry
+button, or explain its icons before measuring first use. Record whether the
+person can find the task/help and understand the first instruction. Low digital
+literacy, reading difficulty and hearing/motor needs are separate observations.
 
 Proposed first exploratory cohort: **5 participants**, followed by a changed
 version with new participants if possible. This is a practical team planning
@@ -70,11 +81,11 @@ separate column. A persona or insight changes when evidence contradicts it.
 | E03 | H4: learning transfers | Later present a different synthetic bill through the same procedure, without coaching | If they need takeover again, revise guidance rather than claim digital autonomy |
 | E04 | Recovery remains understandable | Safely inject interruption, pending result or lost response; observe next action | If they try to pay again while status is unresolved, treat it as a release-blocking misunderstanding |
 | E05 | Browser speech is feasible | Test real input/output on physical Android Chrome and iOS Safari; record versions and processing route | Resolve adapter/target support early; mocks do not establish speech capability |
-| E06 | Real utility-bill execution is feasible | Inspect actual provider documentation and an approved sandbox flow with utility bill lookup/settlement/status capabilities | Merchant checkout or a deep link alone cannot pass the payment-provider gate |
+| E06 | The simulation engine faithfully resolves scenarios | Execute synthetic bill success/pending/failure, lost response, restart and cancellation against persisted application state | A hardcoded success or reset that loses an attempt cannot pass the complete-simulator gate |
 | E07 | A distribution/buyer channel is plausible | Present the observed problem, complete journey and operational requirements to a potential sponsor | Record an actual next step, not a partnership claim; no outreach performed yet |
 
-E01 and E06 begin early: understanding and provider capability are independent
-ways the product can fail. E05 also starts before speech implementation spreads.
+E01 and E06 begin early: understanding and consistent simulation behavior are
+independent ways the product can fail. E05 also starts before speech implementation spreads.
 Their results may change architecture; an experiment is not a commitment to keep
 the original idea regardless of evidence.
 
@@ -96,8 +107,16 @@ Use the same released test version and synthetic scenario for the cohort.
 6. Ask what felt clear, confusing or uncomfortable, and which help they chose.
    Invite a voluntary second session; do not require a signup or payment.
 
-Never let a research task become a real financial operation. Operational pilot
-validation has a separate provider/privacy/authorization gate and protocol.
+Select applicable [adversarial scenarios U01–U20](RED_TEAM_USABILITY.md) before the
+run, including repeated taps, permission denial, exit after submit and uncertain
+cancellation. A facilitator's click, hint or state explanation is assistance;
+the product's contextual help is an intended feature. Record comprehension
+probes separately from spontaneous task behavior, since a probe can itself
+prompt review. Never present a coached repeat as independent first-use success.
+
+Every research and finished-product task remains simulated. No real financial
+operation, credential or external-provider onboarding is part of this protocol.
+Explain practice mode before starting and keep labels/receipts visible.
 
 ## Measures and provisional thresholds
 
@@ -120,6 +139,12 @@ For incomplete or stopped sessions, retain the reason and report them separately
 do not silently remove them from the denominator. A team-only run, facilitator
 walkthrough, accessibility audit and target-user session have different labels.
 Never combine different versions/cohorts into a single improved percentage.
+
+An unexpected financial commit or an observed belief that leaving annulled a
+submitted operation is a safety failure even if the person finishes the rest
+of the journey. Stop the affected synthetic scenario, record the observation,
+explain safely, and redesign/retest. Do not mask it with the 4/5 completion target.
+No observed failure has yet occurred: these are prospective release rules.
 
 ## Observation and result templates
 
@@ -156,8 +181,9 @@ cheapest discriminating alternative instead of changing everything at once.
 
 If the product fails the target, revise the affected module and test it again;
 do not weaken the threshold after seeing results. If the segment does not need
-the solution, or provider execution is unavailable, revisit the product decision
-and disclose the consequence rather than labeling the same simulation usable.
+the solution, revisit the segment or interaction. If the simulator cannot persist
+or resolve its own scenarios, fix that behavior before calling the product usable.
+An external-provider connection is not a completion requirement.
 
 ## Software and operational evidence
 
@@ -166,7 +192,9 @@ additional evidence, not a replacement for confirmation/idempotency/ownership,
 restart, cancellation and accessibility tests. Likewise, passing software tests
 does not establish comprehension, trust or sustained independent use.
 
-For operational readiness, retain provider sandbox evidence, security and privacy
-review, supported-device matrix, restore drill, support escalation check and
-actual end-to-end provider reconciliation. Keep all raw sensitive artifacts
-outside the public repo and link only sanitized approved summaries.
+For simulator readiness, retain the supported-device matrix, persisted-state
+restart/reset checks, contextual-help walkthrough and actual end-to-end simulation
+results. No real-provider sandbox, payment authorization or staffed financial
+support operation is required. Keep raw participant data outside the public repo
+and publish only consented sanitized summaries. Transfer between two practice
+bills is not evidence of independent real-world banking.

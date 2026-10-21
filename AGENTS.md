@@ -2,7 +2,7 @@
 
 This repo builds the hackathon entry for the **autonomía digital** challenge: a
 mobile-first digital companion that helps an older adult complete everyday digital
-procedures independently, with written and spoken guidance. Start with one simulated
+procedures in a complete practice environment, with written and spoken guidance. Start with one simulated
 utility bill payment end to end; medical appointments, transport, shopping, and bank
 procedures are later extensions, not implemented features.
 
@@ -39,14 +39,21 @@ choose a task by touch or supported voice input, then follow one clear step at a
 plain Spanish, without a required account or technical jargon in the demo. The app can
 read instructions aloud; the person can ask "¿qué hago?",
 go back, and resume saved progress. Nothing consequential happens until they explicitly
-confirm in words they understand. The intended outcome is **agency over a real procedure,
-with mistakes made recoverable**. Development and demonstrations use simulated money;
-an operational payment release requires an authorized provider and verified settlement.
+confirm in words they understand. The intended outcome is **understanding and control
+while practicing a procedure, with mistakes made recoverable**. Simulation is the agreed
+finished-product scope: no real money, bank connection, utility integration or settlement.
 
 Target user: older adults with low digital literacy and a rational fear of making an
 irreversible error, possibly with reduced vision, hearing, or motor precision. Barriers in
 scope are the challenge's own: habits, language, trust, and the feeling that "this wasn't
 built for me."
+
+The baseline interaction must support **very low digital literacy**: do not assume
+knowledge of icons, links, sessions, microphone permissions or pending transactions.
+Concrete labels/examples, safe repeated-input handling and unassisted first-use
+observation are required. Use [adversarial usability scenarios](docs/RED_TEAM_USABILITY.md)
+with `red-team-auditing` and `non-overwhelming-ux`; design hypotheses are not confirmed
+failures. User confusion never authorizes payment, credential sharing or auth bypass.
 
 ### Agreed experience and usable-product destination
 
@@ -59,7 +66,8 @@ design discussion. It is an agreed target, not evidence of implemented behavior.
   journey; any roadmap items shown must be clearly unavailable, not clickable dead ends.
   Bottom navigation, if included, also needs text labels; messages and calls are not
   committed features merely because their icons appear in a sketch. An offered support
-  channel needs a real owner and process before operational release.
+  channel is included only if someone actually provides it; contextual self-help and safe
+  exits are required, while a staffed call center is not a release prerequisite.
 - **First complete journey:** home → choose service → enter bill details → review payee
   and amount → explicit confirmation → verified simulated result and receipt. Include
   backward navigation, persisted drafts, contextual help, and the mock cancellation path.
@@ -67,20 +75,18 @@ design discussion. It is an agreed target, not evidence of implemented behavior.
   reading of instructions and contextual help, plus a small explicit command set such as
   "repetí", "más despacio", "no entiendo", and "quiero pagar la luz" on supported browsers.
   Free-form AI conversation is later work. Touch and keyboard remain complete alternatives.
-- **External apps:** the internal verification flow runs against a simulated provider. A handoff
-  must say which app/site will open, preserve our draft, and provide a return/help path.
-  Opening Mercado Pago or a transport app does not prove completion, preserve their state,
-  or give us cancellation control. Revisit this boundary only with a documented provider
-  integration and tests of the actual capabilities.
+- **External apps:** all supported practice flows finish inside this application using
+  internal simulated services. No external payment app, bank login or service-provider
+  connection is required. Links must not imply we performed a real-world transaction.
 
-The user explicitly requires a **usable product**, not a demo-only destination. The
-first operational target is a complete utility-bill payment with this home, voice,
-persistence, verified result and support. A simulated payment is an internal engineering
-checkpoint and a safe demonstration tool, not fulfillment of real bill payment. Do not
-start a second procedure before the first satisfies its relevant completion gates.
-Live money is not needed in the public demo; operational use needs an explicitly enabled,
-authorized provider, verified account authority, settlement/reconciliation and operational
-review. Do not infer those capabilities from a merchant checkout API or a deep link.
+The user explicitly requires a **complete usable simulator**, not disconnected screens.
+The first complete capability is practice paying a synthetic utility bill with this home,
+voice, persistence, verified simulation result, receipt and recovery. A simulation is the
+finished product, not a blocker awaiting external integrations. Every enabled task works
+end to end; build additional simulated procedures after the first meets its completion
+gates. Mark practice screens and receipts clearly: "Modo práctica — no se mueve dinero".
+No real payment APIs, financial credentials, provider agreements or live authorization
+flows belong in the current scope. A future request to change this is a separate decision.
 
 ### Team documents and evidence
 
@@ -167,6 +173,11 @@ The home is a task chooser and may offer several task cards. This exception does
 permit competing primary actions inside a procedure step; help/back/voice controls remain
 available as secondary actions.
 
+Leaving a draft, stopping speech and requesting payment cancellation must have distinct
+events, labels and truthful consequences. Leaving after submit does not annul payment.
+A new review control requires fresh deliberate activation; previous taps, held keys and
+implicit form submissions cannot become financial confirmation.
+
 - **Mechanism:** step definitions declare a single primary action (enforced by the step
   schema type + a test); a copy review checklist per screen. Composition: `non-overwhelming-ux`.
 - **Why (falsifiable):** cognitive load and distrust are two of the four barriers the
@@ -193,28 +204,28 @@ and an alternate path — it never terminates the flow.
 - **Why (falsifiable):** "todo el proceso de una vez" fails the instant one step has no exit.
   Enumerating steps and checking for dead ends is mechanical, not subjective.
 
-### I8 — Development/demo cannot move real money; operational authority must be explicit
+### I8 — The finished product simulates procedures and cannot move real money
 
-Integrations sit behind a provider adapter whose default is a mock. Live payment credentials
-are never committed and are refused unless explicitly enabled for an authorized non-demo
-environment. Documentation of a real-provider design does not authorize a real transaction.
+The internal provider adapter is the simulation engine, not an external integration.
+Do not implement a live payment adapter, financial-login flow, payment webhook or live
+credential binding. Deployment does not change practice mode into financial operation.
 
-- **Mechanism:** a single provider interface with `MockProvider` as the default; an env guard
-  that refuses live keys when `DEMO=true`; no keys in the repo. Composition:
+- **Mechanism:** a simulation-only provider factory, synthetic service/bill data, no
+  payment SDK or outbound financial call, and explicit practice labels. Composition:
   `irreversible-action-gate`, `secret-lifecycle-discipline`.
 - **Why (falsifiable):** a hackathon demo that moves real money is an irreversible action on a
-  stranger's account. The guard is checkable: grep for live key variables and assert none are
-  read at startup in demo mode.
+  stranger's account, outside the user's chosen scope. Verify that the finished build has
+  no live financial adapter/credential requirement and that practice receipts are labeled.
 
 ### I9 — Depth before breadth
 
-One procedure works end to end before a second procedure is started. Establish its mock
-contract first; operational completion additionally needs its actual provider and support.
+One simulated procedure works end to end before a second procedure is started.
+Completion requires working software, persistence, accessible guidance and recovery.
 A half-finished second flow does not make the first usable.
 
-- **Mechanism:** the Definition of Done requires end-to-end evidence and the applicable
-  provider/operational gates for a *complete* flow before a new flow is added. A public
-  demo may safely show synthetic transactions, labeled as such, without claiming release.
+- **Mechanism:** the Definition of Done requires end-to-end and comprehension evidence for
+  a complete simulated flow before a new flow is added. Its usable release requires no
+  real-provider integration. Public presentation always identifies the simulation.
 - **Why (falsifiable):** the challenge is "todo el proceso de una vez"; a flow that stops
   before confirmation is not that process. The e2e test is the evidence.
 
@@ -402,18 +413,20 @@ Every item traces to an invariant above.
 
 - [ ] One procedure runs end to end against the mock: start → confirm → result, with a working
       undo/cancel path (I1, I2, I9).
-- [ ] An operational payment release additionally has verified utility-bill provider
-      capability, account authority, reconciliation, truthful cancellation/support,
-      and deployment/privacy/restore evidence. Mock success is not real payment (I1–I4, I7–I9).
+- [ ] The complete practice journey persists real application state, verifies simulated
+      results/cancellation and labels its receipts. No external provider gate is imposed (I1–I4, I7–I9).
 - [ ] Home offers labeled task cards, favorites, and help; every available task leads to a
       working flow, with roadmap items clearly unavailable (I5, I7, I9).
 - [ ] Reloading mid-flow resumes the same step with entered data intact (I3).
 - [ ] Every displayed status comes from the server/provider result, never optimistic (I4).
 - [ ] Each step has exactly one primary action, plain es-AR copy, a help target, and a safe
       exit (I5, I7).
+- [ ] First-use checks include very low digital familiarity without a walkthrough. Repeated
+      input cannot bypass review; exit, speech stop and financial cancellation remain distinct
+      in state, visible copy and spoken explanation (I1, I2, I5, I7, I10).
 - [ ] `axe` passes and keyboard + 200% zoom were checked on every step (I6).
-- [ ] No live payment credentials in the repo or demo runtime; `MockProvider` is the default
-      and demo mode refuses live keys. Authorized operational credentials use secure configuration (I8).
+- [ ] No payment SDK, live financial credentials, bank login or external bill-payment call;
+      practice mode remains explicit in development, deployment and receipts (I8).
 - [ ] The app reads approved instructions/help aloud on supported browsers; listen, pause,
       repeat, speed, and mute controls were checked. The documented command set works, and
       permission denial or unavailable speech leaves a complete non-voice journey (I10).

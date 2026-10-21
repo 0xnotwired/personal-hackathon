@@ -9,7 +9,9 @@ not started. Updated 2026-10-21.
 
 **Understand the next step, make your own decision, and recover when something
 goes wrong.** Autonomía Digital is a mobile-first companion for everyday digital
-procedures, with plain es-AR text and user-controlled spoken guidance.
+procedures in a complete simulation environment, with plain es-AR text and
+user-controlled spoken guidance. The product is for safe practice and learning;
+it does not pay real bills or connect to banks or utility providers.
 
 Suggested public line: **“Entendé cada paso. Decidí vos.”** This is a proposed
 positioning, not a statement of measured impact.
@@ -21,20 +23,21 @@ and a useful way forward after an error.
 
 ## What counts as a usable product
 
-The user explicitly requires a usable product rather than a demo-only destination. A release must
-complete its declared task in the intended environment, not merely resemble it.
-All visible enabled features work. Speech, accessibility, persistence, errors,
-support and tested startup are part of completion, not optional polish.
+The user clarified that **a complete simulated experience is the finished scope**.
+Every enabled task works end to end: select, enter data, review, confirm, persist
+its simulated operation, understand the result and recover/cancel/repeat a practice.
+Voice, accessibility, favorites, persistence, errors and tested startup are part
+of completion. A sequence of decorative screens or a hardcoded success is not.
 
-For **paying a real utility bill**, success means the correct bill was paid
-through an authorized provider and the result is reconciled. A synthetic bill
-and a mock receipt do not meet that definition. Simulators remain essential for
-development and safe demonstrations but are not the operational release.
+The first full practice is a synthetic utility-bill payment. Appointments,
+transport and shopping can follow as complete simulations after that journey
+meets its gates. No real payment API, bank login, provider onboarding, settlement
+or financial credential is required now or as a release prerequisite.
 
-The initial operational target remains utility-bill payment end to end. Other
-procedures—appointments, transport, shopping, then banking—must each satisfy
-their own completion definition before becoming active tasks. This is sequencing
-of complete capabilities, not permission to build shallow versions of all of them.
+The practice label **“Modo práctica — no se mueve dinero”** stays visible, and
+receipts say they are practice receipts. Actual application state—not a real
+bank transaction—establishes the simulated outcome. A new practice preserves the
+previous attempt's history and does not silently reset an unresolved attempt.
 
 ## Who we are designing for
 
@@ -43,6 +46,31 @@ make their own decisions, but needs help understanding an unfamiliar digital
 procedure or hesitates because its consequences are unclear. Age alone does not
 describe ability. Recruit across differing reading, vision, hearing and motor
 needs; the product must not assume that voice helps everyone.
+
+Design for **very low digital literacy**, including people unfamiliar with links,
+permissions, accounts, sessions and transaction states. Do not require icon
+knowledge, a tutorial or a relative beside them to discover the first action.
+Explain unavoidable prerequisites where they appear; retain provider identity
+and authorization controls. Assess reading/hearing/motor needs separately rather
+than inferring them from age or digital unfamiliarity.
+
+### Low-literacy interaction requirements
+
+- Concrete action labels, short instructions and examples beside the requested
+  field; no generic “OK”, unexplained icon or technical prerequisite.
+- Going back, leaving a draft, stopping speech and annulling payment have distinct
+  meanings. A close/cancel button never implies money stopped after submission.
+- Repeated taps/held keys cannot cross review into an unintended confirmation.
+  Consequential controls need fresh deliberate accessible activation.
+- A pending/unknown state explains what is known and the safe next action; a
+  comforting tone, color or spinner cannot substitute for comprehension.
+- Listening to help needs no microphone permission. Denial leaves an obvious
+  complete touch journey without a settings walkthrough.
+- Someone who does not understand can stop safely and reach owned help. No
+  forced quiz, credential sharing, shaming or automatic payment is a remedy.
+
+The [adversarial usability review](RED_TEAM_USABILITY.md) defines five design
+hypotheses and twenty acceptance scenarios; none has been executed yet.
 
 These are **persona hypotheses**, not interviews:
 
@@ -103,7 +131,7 @@ microphone, a chatbot, large buttons or a collection of open-source packages.
 
 | Alternative category to investigate | Strength to acknowledge | Our proposed distinction | Evidence needed |
 | --- | --- | --- | --- |
-| Existing payment/utility application | Existing provider access and settlement | Guidance and recoverability for this segment | Compare the same synthetic task and provider constraints; do not invent missing competitor features |
+| Existing payment/utility application | Executes actual transactions, outside this product's scope | A place to practice without real money or credentials | Compare practice comprehension; do not claim transaction capability or invent missing competitor features |
 | Tutorials or digital-literacy courses | Reusable instruction and practice | Contextual help at the moment of a specific task | Observe completion and transfer, not just course preference |
 | Human/family assistance | Familiarity, trust and flexibility | Person retains their own device/decisions when help is absent | Observe independent attempts; do not claim humans are unnecessary |
 | Generic voice assistant | Flexible conversational entry | State-bound explanations and explicit financial authority | Command/confirmation and result-consistency tests |
@@ -116,19 +144,19 @@ This is a comparison agenda, not a completed competitor study. No “first”,
 | Capability | Complete behavior | Not sufficient |
 | --- | --- | --- |
 | Home/favorites | Every enabled task reaches a working procedure; preferences persist | Attractive cards with unavailable destinations |
-| Payment | Authorized bill lookup, correct payee/amount, explicit confirmation, reconciled outcome and valid receipt | Mock success or merchant checkout assumed to settle a utility bill |
+| Practice payment | Synthetic bill lookup, correct simulated payee/amount, explicit confirmation, durable outcome and labeled practice receipt | Decorative success screen or a claim that actual money moved |
 | Spoken guidance | Useful es-AR output, controls, tested browser support and full non-voice path | Browser API presence or a prerecorded voice clip |
 | Recovery | Draft restoration, idempotent commit, honest unresolved state and safe support | A spinner, cached success or a retry that can pay again |
-| Cancellation | Real provider capability explained and verified | Calling a settled payment reversible without evidence |
-| Support | An available help route, safe diagnostics and a response owner/process | A phone/message icon with nobody behind it |
-| Additional procedure | Its real booking/purchase/trip outcome and recovery are defined and implemented | A redirect or screenshot treated as completion |
+| Cancellation | The simulation engine changes and persists the simulated operation; result is verified by lookup | Hiding a screen or implying a real bill was annulled |
+| Help | Complete contextual explanations, repeat/retry/safe exit; human contact only when actually available | Dead message/phone icons or a compulsory staffed support service |
+| Additional practice | Its simulated booking/purchase/trip outcome and recovery are implemented end to end | A redirect or screenshot treated as working practice |
 
 ## Operational viability hypothesis
 
-Candidate route: a community/utility-supported deployment that makes basic use
-available without forcing a subscription on the older adult. A utility, service
-provider or public/community organization could sponsor delivery or pay for a
-supported integration. This is an unvalidated B2B2C hypothesis, not a contract.
+Candidate route: community digital-literacy sessions and independent practice
+at home, without forcing a subscription. A community/public organization could
+sponsor access or workshops. This is an unvalidated distribution hypothesis, not
+a contract or a required service-provider partnership.
 
 Test user trust and distribution separately from the buyer's willingness to fund
 it. A workshop attendance or an interview with a buyer does not prove recurring
@@ -139,27 +167,27 @@ Use a bottom-up case, with blank inputs until sourced:
 
 - Addressable pilot users = eligible people reachable through one actual channel,
   not the entire older-adult population.
-- Monthly operating cost = hosting + database/backups + provider fees + any
-  speech usage + support labor + compliance/maintenance.
+- Monthly operating cost = hosting + retained application data + any
+  optional speech costs + facilitation/maintenance time. No financial-provider fee.
 - Contribution per sponsoring organization = agreed recurring revenue minus its
-  variable integration, support and transaction costs.
+  variable teaching/support and application costs, if an organization funds it.
 - Independence outcome = correct, understood completion without unplanned human
   takeover. Usage growth alone is not this outcome.
 
 ## Product release gates
 
-1. **Desirability:** observed task and comprehension evidence, including a second
-   bill and failures; exploratory limitations retained.
-2. **Technical:** all required I1–I10 checks and physical-device voice/accessibility
-   evidence for the supported browser matrix.
-3. **Provider:** verified utility-bill capability and authority, not an assumed
-   payment-collection API; explicit settlement/cancellation/reconciliation semantics.
-4. **Operational:** owned support, deployment, HTTPS, secrets management, monitoring,
-   backups/restore and appropriate privacy/provider/legal review.
-5. **Communication:** all claims trace to evidence; simulations and recordings are
-   labeled; no mock receipt is described as actual payment.
+1. **Usable practice:** all enabled tasks work end to end, including repeat
+   practice, clear synthetic content, persistent operation state and cancellation.
+2. **Comprehension:** observed first-use and second-synthetic-bill behavior with
+   very low digital literacy; exploratory evidence does not establish real-world
+   banking autonomy.
+3. **Technical:** applicable I1–I10 checks plus physical-device voice and manual
+   accessibility evidence. No mandatory external financial integration exists.
+4. **Deployment/help:** tested startup and retained data, contextual help and safe
+   exits, no imaginary support channel, appropriate privacy for practice records.
+5. **Communication:** visible practice labels, practice receipts and claims scoped
+   to what was actually tested. Live presentations/recordings stay distinguished.
 
-A hackathon submission and an operational release are different gates. If the
-provider gate remains open, present the implemented work honestly and keep the
-operational target on the plan. Do not rename an incomplete payment product a
-finished usable one.
+The complete simulator can be released when these gates pass. Its simulation
+boundary is the intended use, not an unfinished real-payment requirement.
+Actual implementation, usability and device evidence remain pending.

@@ -5,8 +5,8 @@
 **Understand each step. Make your own decision.**
 
 Autonomía Digital is a proposed mobile-first companion for older adults who need
-help understanding and completing everyday digital procedures. It combines plain
-Spanish, optional spoken guidance and recoverable steps while keeping decisions
+help understanding and practicing everyday digital procedures. It is a complete
+simulation product with plain Spanish, optional speech and recoverable steps, keeping decisions
 with the person.
 
 ## The intended experience
@@ -15,9 +15,10 @@ Choose a task from large labeled cards, ask for help when needed, review what
 will happen, personally confirm, and receive a verified result. An interruption
 should not erase the draft; an uncertain payment should not trigger another charge.
 
-The team's first operational target is a complete utility-bill payment. Medical
-appointments, transport and shopping follow as complete supported capabilities,
-not nonfunctional shortcuts. The teammate's sketches inform the home and favorites.
+The first complete practice is a simulated utility-bill payment. Medical
+appointments, transport and shopping follow as complete simulations. The teammate's
+sketches inform home/favorites. No bank, payment or utility API connection is required.
+Practice mode and receipts are explicitly labeled; no actual money moves.
 
 ## What makes the proposed experience distinct
 
@@ -28,13 +29,14 @@ not nonfunctional shortcuts. The teammate's sketches inform the home and favorit
 | Recover | Retained draft, reconciled operation status and a useful error/support path |
 
 These are product hypotheses and design requirements, not measured advantages
-over competing applications. The destination is a usable product; sketches and
-simulated providers support research and verification, not a claim of real payment.
+over competing applications. The destination is a usable simulator: its UI,
+voice, saved state, results, cancellation and repeat practice must actually work.
+It is not waiting for a real-payment integration to count as complete.
 
 ## Current state and evidence
 
-**Planning stage: no application implementation, user-study results or verified
-live payment integration exists yet.** The repository contains product/architecture
+**Planning stage: application implementation and user-study results are pending.
+Live financial integration is outside the agreed product scope.** The repository contains product/architecture
 documents, an execution plan and vendored agent skills. There is no runnable app
 command to copy at this stage.
 

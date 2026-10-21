@@ -3,7 +3,8 @@
 Documento para el equipo · 21 de octubre de 2026
 
 **Estado actual:** tenemos el diseño y la planificación. Todavía no hay una
-aplicación implementada, pruebas con usuarios ni una integración de pagos reales.
+aplicación implementada ni pruebas con usuarios. La versión final será un
+simulador completo: no necesita integrar bancos, pagos ni proveedores reales.
 
 [Plan por módulos](ACTION_PLAN.md) · [Arquitectura y repos](ARCHITECTURE.md) ·
 [Estrategia del hackathon](HACKATHON_PLAYBOOK.md) · [Demo y pitch](DEMO_AND_PITCH.md)
@@ -11,17 +12,24 @@ aplicación implementada, pruebas con usuarios ni una integración de pagos real
 ## La idea en una frase
 
 **Un acompañante digital que ayuda a las personas mayores a entender y completar
-sus trámites, con instrucciones claras, ayuda por voz y decisiones que siguen
-siendo propias.**
+sus trámites en un entorno de práctica, con instrucciones claras, ayuda por voz
+y decisiones que siguen siendo propias.**
 
 La frase que proponemos para presentarlo es:
 
 > **Entendé cada paso. Decidí vos.**
 
-El objetivo es un **producto utilizable**. Eso exige que las funciones que
-ofrecemos sirvan de principio a fin: iniciar, entender, completar, conocer el
-resultado y resolver una dificultad. Las pantallas, los bocetos y las
-simulaciones ayudan a construirlo y probarlo; no alcanzan para darlo por terminado.
+El objetivo es un **simulador completo y utilizable**. Se puede elegir una tarea,
+practicarla de principio a fin, escuchar ayuda, revisar y confirmar, recuperar el
+progreso, ver un resultado y comprobante de práctica, anular dentro del simulador
+y volver a practicar. No alcanza con pantallas sueltas ni un botón que siempre
+muestre éxito: esas funciones deben trabajar sobre datos y estados guardados.
+
+**No vamos a conectar bancos, Mercado Pago, empresas de servicios ni APIs de
+pagos.** Los servicios y las operaciones se simulan dentro de nuestra app.
+“Completo” se refiere a la experiencia y su funcionamiento, no a mover dinero real.
+La pantalla dirá **«Modo práctica — no se mueve dinero»** y el comprobante estará
+identificado como comprobante de práctica.
 
 ## Para quién y qué problema queremos resolver
 
@@ -40,6 +48,29 @@ Todavía debemos comprobarlo observando tareas reales de uso con datos de prueba
 
 El resultado que buscamos no es que un asistente haga todo por la persona. Es
 que pueda terminar una tarea y entender qué decidió y qué pasó.
+
+### Diseñar para quien no sabe nada de tecnología
+
+Ese es el caso de partida, no un usuario excepcional: alguien que no conoce las
+palabras «sesión», «permiso» o «enlace», puede tocar varias veces y puede creer
+que cerrar una pantalla cancela el pago. No debe necesitar una clase ni tener a
+un familiar al lado para encontrar la primera acción.
+
+El equipo tiene que comprobar, con personas de ese perfil, que:
+
+- Cada pantalla dice qué hacer ahora, con una instrucción corta y un ejemplo cuando haga falta.
+- Los botones dicen qué hacen; ni los íconos ni el color llevan información indispensable por sí solos.
+- Tocar varias veces o mantener una tecla apretada no salta la revisión ni confirma un pago por accidente.
+- «Volver y corregir», «Salir» y «Anular el pago» son acciones diferentes y se explican como tales.
+- Cerrar después de confirmar no se presenta como una anulación; un pago incierto se consulta antes de volver a pagar.
+- Se puede escuchar ayuda sin dar permiso al micrófono; negar ese permiso no bloquea los botones.
+- Si no entiende, puede detenerse y pedir ayuda sin perder el trabajo ni entregar su contraseña.
+
+Aplicamos la skill `red-team-auditing` para cuestionar estas suposiciones. La
+[revisión](RED_TEAM_USABILITY.md) contiene cinco riesgos de diseño y veinte
+escenarios para intentar romper el recorrido. Todavía no son fallos reproducidos:
+hay que comprobarlos en la aplicación y con usuarios, incluyendo una primera
+visita sin explicación previa y una segunda factura sin indicaciones.
 
 ## Cómo se verá
 
@@ -67,9 +98,9 @@ Las tarjetas tendrán texto junto al ícono, letras legibles y controles grandes
 Los favoritos permitirán encontrar tareas frecuentes. La ayuda y la forma de
 volver estarán en lugares predecibles.
 
-## El primer trámite completo: pagar una factura
+## El primer trámite completo: practicar el pago de una factura
 
-Construimos primero este recorrido completo y luego incorporamos otros trámites
+Construimos primero este recorrido simulado completo y luego incorporamos otras prácticas de trámites
 con el mismo nivel de funcionamiento. Es un orden de construcción, no un recorte
 de calidad ni un producto descartable para la demo.
 
@@ -77,19 +108,20 @@ de calidad ni un producto descartable para la demo.
 | --- | --- | --- |
 | 1. Elegir | Toca «Pagar una factura» o usa una orden de voz admitida | Abrir el trámite correcto y explicar el siguiente paso |
 | 2. Identificar | Elige el servicio e ingresa el dato solicitado de la factura | Mostrar un ejemplo, validar y permitir corregir sin borrar el trabajo |
-| 3. Revisar | Comprueba servicio, destinatario e importe | Mostrar datos provenientes del proveedor, con una explicación comprensible |
+| 3. Revisar | Comprueba servicio, destinatario e importe | Mostrar datos del servicio simulado, con una explicación comprensible |
 | 4. Decidir | Confirma expresamente después de revisar | Ejecutar una única operación; ni la voz ni una sugerencia pueden pagar solas |
-| 5. Saber | Consulta el resultado | Mostrar éxito, pendiente o fallo según la respuesta real; reconocer cuando todavía no sabemos el estado |
-| 6. Resolver | Guarda el comprobante, vuelve o pide ayuda | Ofrecer una salida útil; permitir cancelación solo cuando el proveedor lo admita |
+| 5. Saber | Consulta el resultado | Mostrar éxito, pendiente o fallo según el estado guardado del simulador; consultar si falta conocer el resultado |
+| 6. Resolver | Guarda el comprobante, vuelve o pide ayuda | Ofrecer una salida útil, un comprobante de práctica y anulación real del estado simulado |
 
 Si cierra o recarga antes de confirmar, recupera el paso y los datos guardados.
 Si ya envió el pago y se corta la conexión, el producto consulta qué pasó con esa
 operación. **No vuelve a pagar automáticamente.**
 
-Para una factura real, el trámite no está completo hasta que una integración
-autorizada efectivamente pague la deuda y permita verificar el resultado. Una
-API que recibe dinero para un comercio no demuestra esa capacidad. Abrir Mercado
-Pago u otra aplicación tampoco permite afirmar por sí solo que la factura se pagó.
+La factura y el dinero son ficticios, pero el recorrido funciona: guarda datos,
+registra la operación simulada, responde a errores y permite recuperar y repetir.
+No se pide una cuenta bancaria, PIN, tarjeta ni contraseña. No se abre otra app
+para terminar el ejercicio. Completar la práctica nunca se presenta como haber
+pagado una factura de verdad.
 
 ## Sí: el producto habla y escucha
 
@@ -97,7 +129,7 @@ La persona podrá elegir escuchar las instrucciones y activar el micrófono para
 pedir ayuda o seleccionar una tarea. Ejemplos de la experiencia propuesta:
 
 - «Buscá el número de cliente. Te mostramos un ejemplo de dónde aparece.»
-- «Vas a pagar quince mil pesos a Luz Ejemplo. Revisá los datos antes de confirmar.»
+- «En esta práctica, vas a pagar quince mil pesos a Luz Ejemplo. Revisá los datos antes de confirmar.»
 - «Todavía no pudimos confirmar el resultado. Vamos a revisar antes de volver a pagar.»
 
 Las órdenes iniciales a implementar incluyen «quiero pagar la luz», «repetí»,
@@ -152,8 +184,8 @@ defecto a otro motor.
 
 **Regla técnica importante:** el dispositivo guarda el borrador; el servidor y
 el proveedor determinan el estado de una operación. La voz explica ese estado,
-pero no puede inventarlo. El proveedor simulado se usa para verificar el sistema;
-la integración real requiere otro adaptador y sus propios controles.
+pero no puede inventarlo. El «proveedor simulado» es un módulo interno nuestro,
+no una empresa que debamos contratar o conectar. Es el motor de la versión final.
 
 ## Módulos a construir
 
@@ -167,8 +199,7 @@ la integración real requiere otro adaptador y sus propios controles.
 | Operaciones | Proveedor simulado, registro durable, prevención de duplicados y cancelación comprobable |
 | Integración y autoridad | Validar solicitudes, proteger sesiones, confirmar y consultar operaciones |
 | Voz | Leer ayuda, escuchar órdenes admitidas y manejar permisos/errores |
-| Resultados y soporte | Comprobantes, estados pendientes, recuperación y una ayuda operativa real |
-| Integración de servicios reales | Verificar capacidades, autorizaciones, liquidación y reconciliación del proveedor |
+| Resultados y ayuda | Comprobantes de práctica, estados pendientes, recuperación y ayuda contextual que funciona |
 | Operación y entrega | Publicación, seguridad, privacidad, copias/restauración, seguimiento y responsables |
 
 El [plan detallado](ACTION_PLAN.md) conserva los identificadores y dependencias
@@ -197,8 +228,9 @@ la misma versión, identificado como grabación.
 
 Queremos que se vea una tarea completa: elegir, escuchar ayuda, revisar,
 interrumpir y recuperar, confirmar y conocer el resultado. Mostraremos evidencia
-real de lo que hayamos construido y probado. Si usamos el simulador, lo diremos
-en pantalla y al presentar; no lo describiremos como un pago real.
+de lo que hayamos construido y probado. Presentaremos el simulador como el
+producto completo para practicar; estará identificado en pantalla y en el pitch.
+No necesita conexiones financieras para cumplir el alcance acordado.
 
 Usamos *Hackathons Unboxed*, de Alvin Chia, para mejorar el proceso: entender la
 necesidad, poner a prueba las suposiciones más riesgosas, observar comportamiento
@@ -208,18 +240,18 @@ utilizable; los experimentos ayudan a llegar a él.
 
 ## Cuándo podemos decir «está listo»
 
-- Las funciones ofrecidas completan la tarea real declarada, con el proveedor autorizado que corresponda.
-- No hay acciones financieras sin confirmación ni pagos duplicados por reintentos o recargas.
+- Cada función habilitada completa su ejercicio simulado: inicio, revisión, confirmación, resultado y recuperación.
+- No hay operaciones simuladas sin confirmación ni duplicados por reintentos o recargas; nunca se mueve dinero real.
 - Se conserva el progreso y los errores tienen una salida comprensible.
 - La voz funciona en los dispositivos admitidos y existe una alternativa completa sin voz.
 - La interfaz se puede usar con teclado, lector de pantalla y aumento de texto; los controles y contrastes están comprobados.
-- Tenemos resultados verificados, soporte con responsable, privacidad, despliegue y recuperación operativa.
+- Los resultados y comprobantes corresponden al estado guardado del simulador; hay ayuda, privacidad y arranque probado.
 - Las afirmaciones de la presentación corresponden a lo que efectivamente probamos.
 
-Hoy siguen pendientes la implementación, las pruebas, la validación con personas
-y la elección/verificación del proveedor real. Los datos del evento que todavía
+Hoy siguen pendientes la implementación, las pruebas y la validación con personas.
+No hay un proveedor real pendiente de conectar: está fuera del alcance. Los datos del evento que todavía
 faltan —fecha de entrega, equipo completo y reglas de reutilización— deben
 confirmarse para poner responsables y tiempos reales al trabajo.
 
-**La meta compartida: que la persona termine una tarea entendiendo qué hizo,
-conservando sus decisiones y sabiendo cómo seguir si algo no sale bien.**
+**La meta compartida: que la persona pueda practicar una tarea completa,
+entender qué hizo, conservar sus decisiones y aprender a recuperarse de errores.**
