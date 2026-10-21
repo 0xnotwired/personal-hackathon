@@ -14,6 +14,9 @@ type Row = {
   created: number;
   ready: number;
 };
+export const MAX_REVIEWS_PER_SESSION = 100;
+export const MAX_OPERATIONS_PER_SESSION = 50;
+export const RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
 export class Ledger {
   private db: DatabaseSync;
   constructor(
@@ -23,15 +26,27 @@ export class Ledger {
     mkdirSync(dirname(path), { recursive: true });
     this.db = new DatabaseSync(path);
     this.db.exec(`PRAGMA journal_mode=WAL; PRAGMA busy_timeout=5000;
-   CREATE TABLE IF NOT EXISTS reviews(id TEXT PRIMARY KEY,session TEXT NOT NULL,draft TEXT NOT NULL,attempt TEXT NOT NULL,bill TEXT NOT NULL,UNIQUE(session,attempt));
+   CREATE TABLE IF NOT EXISTS reviews(id TEXT PRIMARY KEY,session TEXT NOT NULL,draft TEXT NOT NULL,attempt TEXT NOT NULL,bill TEXT NOT NULL,created INTEGER NOT NULL DEFAULT 0,UNIQUE(session,attempt));
    CREATE TABLE IF NOT EXISTS operations(id TEXT PRIMARY KEY,session TEXT NOT NULL,draft TEXT NOT NULL,attempt TEXT NOT NULL,bill TEXT NOT NULL,status TEXT NOT NULL,created INTEGER NOT NULL,ready INTEGER NOT NULL,UNIQUE(session,draft),UNIQUE(session,attempt));`);
+    const columns = this.db.prepare('PRAGMA table_info(reviews)').all() as { name: string }[];
+    if (!columns.some((column) => column.name === 'created')) {
+      this.db.exec('ALTER TABLE reviews ADD COLUMN created INTEGER NOT NULL DEFAULT 0');
+      this.db.prepare('UPDATE reviews SET created=? WHERE created=0').run(this.now());
+    }
+    this.cleanup();
   }
   close() {
     this.db.close();
   }
+  private cleanup() {
+    const cutoff = this.now() - RETENTION_MS;
+    this.db.prepare('DELETE FROM operations WHERE created < ?').run(cutoff);
+    this.db.prepare('DELETE FROM reviews WHERE created < ?').run(cutoff);
+  }
   review(session: string, input: ReviewInput): Review {
     const data = reviewInput.parse(input);
     const bill = resolveBill(data.service, data.code);
+    this.cleanup();
     if (
       this.db
         .prepare('SELECT id FROM operations WHERE session=? AND draft=?')
@@ -46,10 +61,17 @@ export class Ledger {
         throw new Error('La factura cambió. Volvé a buscarla antes de confirmar.');
       return { id: existing.id, draftId: data.draftId, key: data.key, bill };
     }
+    const count = this.db
+      .prepare('SELECT COUNT(*) AS n FROM reviews WHERE session=?')
+      .get(session) as { n: number };
+    if (count.n >= MAX_REVIEWS_PER_SESSION)
+      throw new Error(
+        'Esta práctica alcanzó el límite de intentos de este navegador. Borrá los datos de práctica para empezar de nuevo.',
+      );
     const id = randomUUID();
     this.db
-      .prepare('INSERT INTO reviews VALUES(?,?,?,?,?)')
-      .run(id, session, data.draftId, data.key, JSON.stringify(bill));
+      .prepare('INSERT INTO reviews(id,session,draft,attempt,bill,created) VALUES(?,?,?,?,?,?)')
+      .run(id, session, data.draftId, data.key, JSON.stringify(bill), this.now());
     return { id, draftId: data.draftId, key: data.key, bill };
   }
   private atomic<T>(action: () => T): T {
@@ -65,6 +87,7 @@ export class Ledger {
   }
   // The only commit boundary. Review identifiers are bound to a session and attempt.
   commit(session: string, reviewId: string, key: string): Operation {
+    this.cleanup();
     return this.atomic(() => {
       const review = this.db
         .prepare('SELECT * FROM reviews WHERE id=? AND session=? AND attempt=?')
@@ -79,6 +102,13 @@ export class Ledger {
           throw new Error('Esta práctica ya fue confirmada. Consultá el resultado.');
         return this.operation(prior);
       }
+      const count = this.db
+        .prepare('SELECT COUNT(*) AS n FROM operations WHERE session=?')
+        .get(session) as { n: number };
+      if (count.n >= MAX_OPERATIONS_PER_SESSION)
+        throw new Error(
+          'Esta práctica alcanzó el límite de operaciones de este navegador. Borrá los datos de práctica para empezar de nuevo.',
+        );
       const bill = JSON.parse(review.bill) as Bill;
       const id = randomUUID();
       const now = this.now();
@@ -139,6 +169,12 @@ export class Ledger {
           )
           .run(id, session);
       return this.get(session, id)!;
+    });
+  }
+  clear(session: string) {
+    this.atomic(() => {
+      this.db.prepare('DELETE FROM operations WHERE session=?').run(session);
+      this.db.prepare('DELETE FROM reviews WHERE session=?').run(session);
     });
   }
 }

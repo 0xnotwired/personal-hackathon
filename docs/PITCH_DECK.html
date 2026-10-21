@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autonomía Digital — Pitch</title>
+<style>
+  :root{
+    --navy:#0b2a4a; --ink:#123451; --blue:#0055ba; --cyan:#00b2e3;
+    --bg:#f5f9fc; --card:#ffffff; --ok:#1a7a4a; --warn:#a86a00; --fail:#a82626;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html,body{height:100%}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:#062038; color:var(--ink); overflow:hidden;
+  }
+  #stage{position:relative; width:100vw; height:100vh; display:flex; align-items:center; justify-content:center}
+  .slide{
+    display:none; width:min(96vw, calc(96vh * 16/9)); height:min(96vh, calc(96vw * 9/16));
+    background:var(--bg); border-radius:18px; overflow:hidden;
+    box-shadow:0 20px 60px rgba(0,0,0,.45); padding:4.2% 5%; position:relative;
+  }
+  .slide.active{display:block}
+  h1{font-size:clamp(28px,5.6vh,58px); color:var(--navy); line-height:1.12}
+  h2{font-size:clamp(22px,4.4vh,46px); color:var(--navy); line-height:1.15; margin-bottom:2.6vh}
+  .kicker{color:var(--blue); font-weight:700; letter-spacing:.12em; text-transform:uppercase; font-size:clamp(12px,1.9vh,20px); margin-bottom:1.6vh}
+  p.big{font-size:clamp(16px,2.9vh,30px); line-height:1.45}
+  .accent{color:var(--blue); font-weight:700}
+  .cyan{color:#0079a8; font-weight:700}
+  .footnote{position:absolute; bottom:2.4vh; left:5%; right:5%; font-size:clamp(10px,1.5vh,15px); color:#52708c}
+  .strip{position:absolute; bottom:0; left:0; right:0; height:1.6vh; background:linear-gradient(90deg,var(--blue),var(--cyan))}
+  .cols{display:flex; gap:4%; align-items:flex-start}
+  .col{flex:1}
+  .stat{background:var(--card); border-radius:14px; padding:2.2vh 2.4vw; margin-bottom:1.6vh; box-shadow:0 2px 10px rgba(11,42,74,.08); border-left:.5vw solid var(--cyan)}
+  .stat .n{font-size:clamp(24px,5vh,50px); font-weight:800; color:var(--blue); line-height:1}
+  .stat .t{font-size:clamp(13px,2.2vh,22px); color:var(--ink); margin-top:.8vh; line-height:1.3}
+  .quote{font-size:clamp(18px,3.4vh,36px); line-height:1.5; color:var(--navy); font-weight:600; border-left:.6vw solid var(--cyan); padding-left:2.2vw}
+  .phone{width:24vh; min-width:170px; border:3px solid var(--navy); border-radius:24px; background:#fff; overflow:hidden; margin:0 auto; box-shadow:0 8px 22px rgba(11,42,74,.18)}
+  .phone .bar{background:var(--blue); color:#fff; font-size:clamp(9px,1.5vh,14px); font-weight:700; padding:1vh 1vw; text-align:center}
+  .phone .bar.cyanbar{background:var(--cyan); color:#062038}
+  .taskcard{margin:1.2vh .9vw; background:#eaf5fd; border:2px solid var(--blue); border-radius:10px; padding:1.2vh 1vw; font-size:clamp(10px,1.7vh,16px); font-weight:700; color:var(--navy); text-align:center}
+  .taskcard.dim{opacity:.45; border-style:dashed}
+  .navdots{position:absolute; top:2.6vh; right:3vw; font-size:clamp(11px,1.8vh,17px); color:#52708c; font-weight:700}
+  .mockline{height:1.4vh; background:#dfe9f2; border-radius:6px; margin:.9vh 1.2vw}
+  .mockline.w80{width:80%} .mockline.w60{width:60%} .mockline.w40{width:40%}
+  .mockbtn{margin:1.2vh 1.2vw; background:var(--blue); border-radius:8px; height:3.2vh; min-height:22px}
+  .mockbtn.ghost{background:#eaf5fd; border:2px solid var(--blue)}
+  .mocklead{font-size:clamp(11px,1.9vh,18px); text-align:center; margin:1.4vh 1.2vw; color:var(--navy); font-weight:700}
+  .frame{display:flex; gap:2.4vw; justify-content:center; align-items:flex-start}
+  .frame .fcell{text-align:center}
+  .frame .fnum{font-size:clamp(12px,2vh,20px); font-weight:800; color:var(--blue); margin-top:1.2vh}
+  .frame .flab{font-size:clamp(11px,1.9vh,18px); color:#3d5a76; margin-top:.4vh; max-width:20vw; margin-inline:auto}
+  table.states{width:100%; border-collapse:separate; border-spacing:1.2vh 0}
+  table.states td{background:var(--card); border-radius:12px; padding:1.8vh 1.2vw; vertical-align:top; font-size:clamp(12px,2vh,19px); line-height:1.35; width:33.3%}
+  .tag{display:inline-block; font-weight:800; font-size:clamp(12px,2vh,20px); margin-bottom:1vh; padding:.4vh 1vw; border-radius:8px}
+  .tag.ok{background:#e2f3ea; color:var(--ok)}
+  .tag.warn{background:#fbf2df; color:var(--warn)}
+  .tag.fail{background:#fbe4e4; color:var(--fail)}
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 1 · Portada -->
+  <section class="slide active">
+    <div class="navdots">1 / 6</div>
+    <div style="margin-top:17vh">
+      <div class="kicker">Hackathon · Autonomía digital</div>
+      <h1>Entendé cada paso.<br>Decidí vos.</h1>
+      <p class="big" style="margin-top:3.5vh; max-width:60vw">
+        Una app móvil para que personas mayores <span class="accent">practiquen un trámite digital
+        completo</span> — con guía clara escrita y hablada — hasta poder hacerlo solas.
+      </p>
+      <p class="big" style="margin-top:3vh; color:#3d5a76">
+        Modo práctica: <span class="cyan">no se mueve dinero</span>.
+      </p>
+    </div>
+    <div class="strip"></div>
+  </section>
+
+  <!-- 2 · El problema -->
+  <section class="slide">
+    <div class="navdots">2 / 6</div>
+    <div class="kicker">El problema</div>
+    <h2>Juana, 74 años, tiene el celular en la mano… y no paga la luz ella.</h2>
+    <div class="cols">
+      <div class="col" style="flex:1.15">
+        <div class="stat"><div class="n">76%</div><div class="t">de las personas mayores de 60 está conectada a internet</div></div>
+        <div class="stat"><div class="n">4 de 10</div><div class="t">de las que no se conectan dicen: <b>“no sé cómo hacerlo”</b></div></div>
+        <div class="stat"><div class="n">89%</div><div class="t">recibió este año un intento de estafa digital</div></div>
+      </div>
+      <div class="col">
+        <p class="big">El problema no es la conexión. Es <span class="accent">el miedo y el “no sé cómo”</span>.</p>
+        <p class="big" style="margin-top:2.4vh">Y la única “ayuda” de hoy es que <b>otro</b> — hija, nieto — le haga el trámite <span class="accent">en su lugar</span>. Eso no es autonomía, es dependencia.</p>
+      </div>
+    </div>
+    <div class="footnote">Fuentes: INDEC, Dosier estadístico de personas mayores 2025 · BTR Consulting, mayo 2026. Cifras de terceros, no observaciones propias.</div>
+    <div class="strip"></div>
+  </section>
+
+  <!-- 3 · Qué construimos -->
+  <section class="slide">
+    <div class="navdots">3 / 6</div>
+    <div class="kicker">Qué construimos</div>
+    <div class="cols">
+      <div class="col" style="flex:.8">
+        <div class="phone">
+          <div class="bar">Autonomía Digital</div>
+          <div style="padding:1.2vh 0">
+            <div class="taskcard">📄 Pagar una factura</div>
+            <div class="mockbtn ghost" style="margin-top:1.4vh"></div>
+            <div class="flab" style="text-align:center;margin-top:.4vh">Ayuda y opciones</div>
+            <div class="taskcard dim" style="margin-top:1.4vh">🔒 Turnos médicos — Próximamente</div>
+            <div class="taskcard dim">🔒 Transporte — Próximamente</div>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <p class="big">Una tarjeta grande con <span class="accent">ícono y texto</span>, y máximo dos acciones visibles por pantalla fuera de la barra fija.</p>
+        <p class="big" style="margin-top:2.2vh"><b>Un paso a la vez</b>, con ayuda en voz alta opcional: la voz nunca reemplaza al texto, el trámite completo existe con toque y teclado.</p>
+        <p class="big" style="margin-top:2.2vh">Sin cuenta, sin claves, sin datos de tarjeta. El resto —voz, revisar un mensaje, historial, borrar datos— vive en <span class="cyan">“Ayuda y opciones”</span> y <span class="cyan">“Voz”</span>, sin competir con la tarea.</p>
+      </div>
+    </div>
+    <div class="footnote">Presupuesto de acciones comprobado por test de navegador: máximo dos visibles fuera de la barra fija. No mide comprensión con personas.</div>
+    <div class="strip"></div>
+  </section>
+
+  <!-- 4 · El viaje -->
+  <section class="slide">
+    <div class="navdots">4 / 6</div>
+    <div class="kicker">El trámite completo — luz del barrio (ficticia), $18.500,40</div>
+    <div class="frame">
+      <div class="fcell">
+        <div class="phone"><div class="bar cyanbar">Paso 1</div><div class="mockline w80"></div><div class="mockline w60"></div><div class="mocklead">Cargá el código</div><div class="mockbtn"></div></div>
+        <div class="fnum">1 · Escribí</div><div class="flab">el código de la boleta, tal cual está impreso; la app lo acomoda sola</div>
+      </div>
+      <div class="fcell">
+        <div class="phone"><div class="bar cyanbar">Paso 2</div><div class="mockline w80"></div><div class="mocklead">¿Se cortó la página?</div><div class="mockline w40"></div><div class="mockbtn ghost"></div></div>
+        <div class="fnum">2 · Recargá</div><div class="flab">recarga a mitad del trámite: el paso y el código siguen ahí</div>
+      </div>
+      <div class="fcell">
+        <div class="phone"><div class="bar cyanbar">Paso 3</div><div class="mockline w80"></div><div class="mocklead">Importe grande: $18.500,40</div><div class="mockbtn"></div></div>
+        <div class="fnum">3 · Confirmá</div><div class="flab">revisás importe, empresa y mes; los detalles en “Ver todo”; nada se confirma solo</div>
+      </div>
+      <div class="fcell">
+        <div class="phone"><div class="bar">Recibo</div><div class="mocklead">✅ Pago registrado</div><div class="mockline w60"></div><div class="mockline w40"></div></div>
+        <div class="fnum">4 · Recibís</div><div class="flab">recibo de práctica con estado verificado</div>
+      </div>
+    </div>
+    <div class="footnote">Comportamiento verificado en el build probado: la recarga conserva los datos y no se paga dos veces.</div>
+    <div class="strip"></div>
+  </section>
+
+  <!-- 5 · Diferencial y estados honestos -->
+  <section class="slide">
+    <div class="navdots">5 / 6</div>
+    <div class="kicker">El diferencial</div>
+    <p class="quote">Los demás lo explican o lo hacen por vos.<br>Acá <span class="accent">lo practicás vos</span> — con margen para errar.</p>
+    <h2 style="margin-top:4vh; font-size:clamp(18px,3.2vh,32px)">Y cuando algo no sale, la app dice la verdad:</h2>
+    <table class="states">
+      <tr>
+        <td><span class="tag ok">✅ Éxito</span><br>El resultado viene del proveedor; el recibo muestra lo que se pagó.</td>
+        <td><span class="tag warn">⏳ En revisión</span><br>Sí queda pendiente, no dice “pagado”: muestra el camino para averiguar qué pasó.</td>
+        <td><span class="tag fail">✋ Falló</span><br>Error sin castigo: se reintenta y se anula mientras el proveedor lo permite.</td>
+      </tr>
+    </table>
+    <p class="big" style="margin-top:3.4vh; color:#3d5a76">No conectamos bancos ni proveedores reales: <span class="cyan">esa decisión es lo que hace posible la práctica.</span></p>
+    <div class="strip"></div>
+  </section>
+
+  <!-- 6 · Cierre -->
+  <section class="slide">
+    <div class="navdots">6 / 6</div>
+    <div style="margin-top:8vh; text-align:center">
+      <div class="kicker">La contribución</div>
+      <h1 style="font-size:clamp(28px,5vh,52px)">No es una idea: una app que funciona hoy.</h1>
+      <p class="big" style="margin-top:3vh; max-width:72vw; display:inline-block">
+        Una persona mayor puede practicar un trámite entero, perder la conexión, equivocarse... y quedar en pie.
+      </p>
+      <p class="big" style="margin-top:4vh; font-weight:800; color:var(--blue); font-size:clamp(22px,4.2vh,44px)">
+        Entendé cada paso. Decidí vos.
+      </p>
+      <p class="big" style="margin-top:3.5vh; font-size:clamp(12px,2vh,20px); color:#52708c">
+        Piezas open source adaptadas con atribución: Ímpetu · Gambit · Wolf y Cronos · React Aria · XState · Dexie · Zod
+      </p>
+    </div>
+    <div class="strip"></div>
+  </section>
+
+</div>
+
+<script>
+  var slides = document.querySelectorAll('.slide');
+  var i = 0;
+  function show(n){
+    slides[i].classList.remove('active');
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides[i].classList.add('active');
+  }
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') show(i+1);
+    if(e.key === 'ArrowLeft' || e.key === 'PageUp') show(i-1);
+    if(e.key === 'Home') show(0);
+    if(e.key === 'End') show(slides.length - 1);
+  });
+  document.getElementById('stage').addEventListener('click', function(e){
+    show(e.clientX > window.innerWidth/2 ? i+1 : i-1);
+  });
+</script>
+</body>
+</html>

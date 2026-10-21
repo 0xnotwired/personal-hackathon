@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { commitInput } from '../../flows/contracts';
 import { ledger } from '../../lib/server/ledger';
 import { parse, session, json, fail } from '../../lib/server/http';
+import { allow } from '../../lib/server/rate-limit';
 export const runtime = 'nodejs';
 export async function POST(req: NextRequest) {
   try {
@@ -15,6 +16,10 @@ export async function POST(req: NextRequest) {
             'Este navegador perdió el acceso a la práctica. Volvé al inicio para comenzar otra.',
         },
         401,
+      );
+    if (!allow(owner))
+      throw new Error(
+        'Esta práctica recibió muchas consultas seguidas. Esperá un minuto y volvé a intentar.',
       );
     return json(req, ledger().commit(owner, data.reviewId, data.key));
   } catch (e) {

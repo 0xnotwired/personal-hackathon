@@ -9,7 +9,6 @@ test('contextual help fills only a requested example, and safety analysis cannot
   await page.getByRole('button', { name: 'Quiero practicar', exact: true }).click();
   await page.getByRole('button', { name: 'Seguir con luz', exact: true }).click();
   await page.getByRole('button', { name: '¿Qué hago?', exact: true }).click();
-  await page.getByRole('button', { name: 'Mostrarme el próximo paso' }).click();
   await expect(page.getByRole('dialog')).toContainText('Lo escribimos en el casillero');
   await page.getByRole('button', { name: 'Usar un número de ejemplo en mi factura' }).click();
   await expect(page.getByLabel('Número de factura de práctica', { exact: true })).toHaveValue(
@@ -52,7 +51,13 @@ test('no-match stays inconclusive, input is cleared on close and never stored', 
   page,
 }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'Quiero revisar un mensaje que me pide pagar' }).click();
+  async function openSafety() {
+    await page.getByRole('button', { name: 'Ayuda y opciones' }).click();
+    await page
+      .getByRole('button', { name: 'Quiero revisar un mensaje que me pide pagar', exact: true })
+      .click();
+  }
+  await openSafety();
   const field = page.getByLabel('Mensaje que querés revisar');
   await field.fill('La factura vence el 10 de noviembre.');
   await page.getByRole('button', { name: 'Revisar señales del mensaje' }).click();
@@ -67,7 +72,7 @@ test('no-match stays inconclusive, input is cleared on close and never stored', 
     0,
   );
   await page.getByRole('button', { name: 'Volver a donde estaba' }).click();
-  await page.getByRole('button', { name: 'Quiero revisar un mensaje que me pide pagar' }).click();
+  await openSafety();
   await expect(field).toHaveValue('');
   await page.keyboard.press('Escape');
   const stored = await page.evaluate(async () => {

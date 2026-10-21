@@ -70,7 +70,7 @@ test('review restores server-owned amount even when IndexedDB has a changed disp
     });
   });
   await page.reload();
-  await expect(page.getByText('$ 18.500,40', { exact: true })).toBeVisible();
+  await expect(page.locator('.receipt-visual strong')).toHaveText('$ 18.500,40');
   await expect(page.getByText('$ 0,01', { exact: true })).toHaveCount(0);
 });
 test('mobile navigation and standalone manifest work without an account', async ({ page }) => {
@@ -83,6 +83,7 @@ test('mobile navigation and standalone manifest work without an account', async 
   await page.getByRole('button', { name: 'Cerrar ayuda', exact: true }).click();
   await nav.getByRole('button', { name: 'Voz', exact: true }).click();
   await expect(page.locator('#voice-controls')).toBeVisible();
+  await page.getByRole('button', { name: 'Cerrar', exact: true }).click();
   await nav.getByRole('button', { name: 'Inicio', exact: true }).click();
   await expect(page.getByRole('heading', { name: '¿Qué necesitás hacer?' })).toBeVisible();
   const manifest = await (await page.request.get('/manifest.webmanifest')).json();
@@ -133,6 +134,33 @@ test('corrupt saved draft stays preserved until the person explicitly starts aga
   await expect(page.getByText('Tu avance se guardó en este navegador.')).toBeVisible();
   expect(await version()).toBe(1);
 });
+test('a stale tab cannot silently overwrite a newer saved draft', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Quiero practicar', exact: true }).click();
+  await page.getByRole('button', { name: 'Seguir con luz', exact: true }).click();
+  const firstField = page.getByLabel('Número de factura de práctica', { exact: true });
+  await firstField.fill('100200300');
+  await expect(page.getByText('Tu avance se guardó en este navegador.')).toBeVisible();
+
+  const second = await page.context().newPage();
+  await second.goto('/');
+  const secondField = second.getByLabel('Número de factura de práctica', { exact: true });
+  await expect(secondField).toHaveValue('100200300');
+  await secondField.fill('100200301');
+  await expect(second.getByText('Tu avance se guardó en este navegador.')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Volver al paso anterior', exact: true }).click();
+  await page.getByRole('button', { name: 'Seguir con luz', exact: true }).click();
+  await expect(page.getByText(/Otra pestaña cambió esta práctica/)).toBeVisible();
+
+  await second.reload();
+  await expect(secondField).toHaveValue('100200301');
+
+  await page.getByRole('button', { name: 'Conservar mi versión', exact: true }).click();
+  await expect(page.getByText(/Guardamos la versión de esta pestaña/)).toBeVisible();
+  await second.reload();
+  await expect(secondField).toHaveValue('100200300');
+});
 test('viewing past practice never overwrites the current unfinished draft', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: 'Quiero practicar', exact: true }).click();
@@ -144,10 +172,17 @@ test('viewing past practice never overwrites the current unfinished draft', asyn
   await page.getByRole('button', { name: 'Seguir con luz', exact: true }).click();
   await page.getByLabel('Número de factura de práctica', { exact: true }).fill('1002');
   await page.getByRole('navigation').getByRole('button', { name: 'Inicio', exact: true }).click();
+  await page.getByRole('button', { name: 'Ayuda y opciones' }).click();
   await page.getByRole('button', { name: 'Ver mis prácticas anteriores' }).click();
   await page.getByRole('button', { name: /Luz ·/ }).click();
-  await expect(page.getByRole('dialog')).toContainText('Tu borrador actual sigue guardado');
+  await expect(page.getByRole('dialog', { name: 'Práctica anterior' })).toContainText(
+    'Tu borrador actual sigue guardado',
+  );
   await page.getByRole('button', { name: 'Cerrar y conservar mi borrador' }).click();
+  await page
+    .getByRole('dialog', { name: 'Ayuda y opciones' })
+    .getByRole('button', { name: 'Cerrar', exact: true })
+    .click();
   await page.getByRole('button', { name: 'Continuar mi práctica', exact: true }).click();
   await expect(page.getByLabel('Número de factura de práctica', { exact: true })).toHaveValue(
     '1002',

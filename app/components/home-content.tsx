@@ -1,28 +1,22 @@
 import { Ref } from 'react';
 import { Button } from 'react-aria-components';
 import { Draft } from '../flows/contracts';
-import { Preferences } from '../lib/persistence';
 import { Icon } from './ui-icon';
+
 type Props = {
   draft: Draft | null;
-  preferences: Preferences;
+  favorite: boolean;
   title: Ref<HTMLHeadingElement>;
-  onResume: () => void;
-  onStart: () => void;
-  onNew: () => void;
-  onFavorite: () => void;
-  onWelcome: () => void;
+  onPrimary: () => void;
+  onOptions: () => void;
 };
-export function HomeContent({
-  draft,
-  preferences,
-  title,
-  onResume,
-  onStart,
-  onNew,
-  onFavorite,
-  onWelcome,
-}: Props) {
+const roadmapTasks = [
+  { icon: 'clock', name: 'Turnos médicos' },
+  { icon: 'arrow', name: 'Transporte' },
+  { icon: 'bill', name: 'Compras' },
+] as const;
+export function HomeContent({ draft, favorite, title, onPrimary, onOptions }: Props) {
+  const inProgress = !!draft && !draft.operation;
   return (
     <>
       <section className="home-intro">
@@ -37,96 +31,56 @@ export function HomeContent({
           </span>
           Acá podés probar sin miedo a equivocarte.
         </span>
+        <p className="identity-notice">
+          <Icon name="shield" size={18} />
+          <span>
+            Autonomía Digital es un simulador. No es tu banco ni una app de pagos real. Nunca te
+            pedimos claves, códigos ni datos de tarjeta.
+          </span>
+        </p>
       </section>
       <div className="home-grid">
         <section className="task-area" aria-label="Tus trámites">
-          {draft && !draft.operation && (
-            <div className="resume-card">
-              <div>
-                <p className="eyebrow">SEGUIMOS DONDE DEJASTE</p>
-                <h2>Tu práctica está guardada</h2>
-                <p>Podés retomar el paso que estabas haciendo.</p>
-              </div>
-              <Button className="button primary" onPress={onResume}>
-                Continuar mi práctica
-                <Icon name="arrow" />
-              </Button>
-            </div>
-          )}
-          {preferences.favorite && (
-            <div className="favorite-shortcut">
-              <Icon name="star" />
-              <span>Tu favorito</span>
-              <Button
-                className="text-button"
-                onPress={() => (draft && !draft.operation ? onResume() : onStart())}
-              >
-                Pagar una factura
-                <Icon name="arrow" />
-              </Button>
-            </div>
-          )}
           <article className="task-card">
             <div className="task-card-top">
               <span className="task-icon">
                 <Icon name="bill" size={34} />
               </span>
-              <Button
-                className={'favorite-button ' + (preferences.favorite ? 'is-favorite' : '')}
-                aria-label={
-                  preferences.favorite
-                    ? 'Quitar Pagar una factura de favoritos'
-                    : 'Guardar Pagar una factura en favoritos'
-                }
-                aria-pressed={preferences.favorite}
-                onPress={onFavorite}
-              >
-                <Icon name="star" />
-                <span>{preferences.favorite ? 'En favoritos' : 'Guardar favorito'}</span>
-              </Button>
+              {favorite && (
+                <span className="favorite-badge">
+                  <Icon name="star" size={15} /> En favoritos
+                </span>
+              )}
             </div>
+            {inProgress && (
+              <p className="draft-note">
+                Tu práctica está guardada. Podés retomarla donde la dejaste.
+              </p>
+            )}
             <span className="pill">PARA PRACTICAR</span>
             <h2>Pagar una factura</h2>
             <p>Practicá cómo pagar la luz, el gas o el agua. Te acompañamos en cada paso.</p>
-            <Button
-              className="button primary"
-              onPress={() => (draft && !draft.operation ? onNew() : onStart())}
-            >
-              Quiero practicar
+            <Button className="button primary" onPress={onPrimary}>
+              {inProgress ? 'Continuar mi práctica' : 'Quiero practicar'}
               <Icon name="arrow" />
             </Button>
             <span className="task-note">Sin cuentas, tarjetas ni contraseñas.</span>
           </article>
+          <Button className="button secondary full" onPress={onOptions}>
+            Ayuda y opciones
+            <Icon name="arrow" />
+          </Button>
           <div className="roadmap">
             <p className="eyebrow">MÁS ADELANTE</p>
-            <h2>Más cosas para aprender</h2>
-            <p>
-              Turnos médicos, transporte y compras.
-              <br />
-              Estas prácticas todavía no están disponibles.
-            </p>
+            {roadmapTasks.map((task) => (
+              <div className="roadmap-item" key={task.name}>
+                <Icon name={task.icon} size={22} />
+                <span>{task.name}</span>
+                <small>Próximamente</small>
+              </div>
+            ))}
           </div>
         </section>
-        <aside className="companion-card">
-          <div className="companion-art" aria-hidden="true">
-            <div className="art-circle">
-              <Icon name="sound" size={52} />
-            </div>
-            <span className="art-star star-one">✦</span>
-            <span className="art-star star-two">✦</span>
-            <div className="art-message">Vamos paso a paso.</div>
-          </div>
-          <p className="eyebrow">NO TENÉS QUE SABER TODO</p>
-          <h2>Estamos para acompañarte</h2>
-          <p>
-            Podés pedir ayuda todas las veces que quieras. También podés escuchar las indicaciones.
-          </p>
-          <Button className="button secondary" onPress={onWelcome}>
-            <Icon name="sound" />
-            Escuchar la bienvenida
-          </Button>
-          <p className="small-text">Vos elegís cuándo empezar y cuándo parar.</p>
-        </aside>
       </div>
     </>
   );

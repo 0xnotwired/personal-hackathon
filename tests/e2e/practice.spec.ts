@@ -22,7 +22,7 @@ test('complete touch flow, review resume, verified receipt, download and history
   await expect(page.getByText('Tu avance se guardó en este navegador.')).toBeVisible();
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Revisá antes de confirmar' })).toBeVisible();
-  await expect(page.getByText('$ 18.500,40', { exact: true })).toBeVisible();
+  await expect(page.locator('.receipt-visual strong')).toHaveText('$ 18.500,40');
   await page.getByRole('button', { name: 'Confirmar pago de práctica', exact: true }).click();
   await expect(page.getByRole('heading', { name: '¡Pago de práctica completado!' })).toBeVisible();
   const download = page.waitForEvent('download');
@@ -30,7 +30,8 @@ test('complete touch flow, review resume, verified receipt, download and history
   expect((await download).suggestedFilename()).toBe('comprobante-de-practica.txt');
   await page.reload();
   await expect(page.getByRole('heading', { name: '¡Pago de práctica completado!' })).toBeVisible();
-  await page.getByRole('button', { name: 'Ir al inicio', exact: true }).click();
+  await page.getByRole('button', { name: 'Volver al inicio', exact: true }).click();
+  await page.getByRole('button', { name: 'Ayuda y opciones' }).click();
   await page.getByRole('button', { name: 'Ver mis prácticas anteriores' }).click();
   await expect(page.getByRole('button', { name: /Luz ·/ })).toHaveCount(1);
 });
@@ -42,7 +43,8 @@ test('pending is not success; leaving preserves operation and cancellation is ve
   await expect(
     page.getByRole('heading', { name: 'Tu pago de práctica está en revisión' }),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'Ir al inicio', exact: true }).click();
+  await page.getByRole('button', { name: 'Volver al inicio', exact: true }).click();
+  await page.getByRole('button', { name: 'Ayuda y opciones' }).click();
   await page.getByRole('button', { name: 'Ver mis prácticas anteriores' }).click();
   await page.getByRole('button', { name: /Luz ·/ }).click();
   await expect(
@@ -188,6 +190,16 @@ test('session isolation, origin and strict request contracts at actual HTTP boun
     data: { reviewId: review.id, key: review.key, confirmed: true },
   });
   expect(evil.status()).toBe(400);
+  const tlsTerminated = await page.request.post('/api/reviews', {
+    headers: { Origin: 'https://localhost:3000' },
+    data: {
+      draftId: crypto.randomUUID(),
+      key: crypto.randomUUID(),
+      service: 'luz',
+      code: '100200300',
+    },
+  });
+  expect(tlsTerminated.status()).toBe(200);
   const tamper = await page.request.post('/api/operations', {
     headers: { Origin: 'http://localhost:3000' },
     data: { reviewId: review.id, key: review.key, confirmed: true, amount: 1 },
@@ -213,15 +225,28 @@ test('session isolation, origin and strict request contracts at actual HTTP boun
 });
 test('favorites and bill fields persist; unknown bill offers correction', async ({ page }) => {
   await page.goto('/');
+  await page.getByRole('button', { name: 'Ayuda y opciones' }).click();
   await page.getByRole('button', { name: 'Guardar Pagar una factura en favoritos' }).click();
+  await expect(
+    page.getByRole('button', { name: 'Quitar Pagar una factura en favoritos' }),
+  ).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('button', { name: 'Cerrar', exact: true }).click();
   await expect(page.getByText('Tu avance se guardó en este navegador.')).toBeVisible();
   await page.reload();
+  await expect(page.getByText('Tu avance se guardó en este navegador.')).toBeVisible();
+  await page.getByRole('button', { name: 'Ayuda y opciones' }).click();
   await expect(
-    page.getByRole('button', { name: 'Quitar Pagar una factura de favoritos' }),
+    page.getByRole('button', { name: 'Quitar Pagar una factura en favoritos' }),
   ).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('button', { name: 'Cerrar', exact: true }).click();
   await page.getByRole('button', { name: 'Quiero practicar', exact: true }).click();
   await page.getByRole('button', { name: 'Seguir con luz', exact: true }).click();
-  await page.getByLabel('Número de factura de práctica', { exact: true }).fill('123456789');
+  const codeField = page.getByLabel('Número de factura de práctica', { exact: true });
+  await codeField.fill('100 200 300');
+  await expect(codeField).toHaveValue('100200300');
+  await codeField.fill('000200300');
+  await expect(codeField).toHaveValue('000200300');
+  await codeField.fill('123456789');
   await expect(page.getByText('Tu avance se guardó en este navegador.')).toBeVisible();
   await page.reload();
   await expect(page.getByLabel('Número de factura de práctica', { exact: true })).toHaveValue(

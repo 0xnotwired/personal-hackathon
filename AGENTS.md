@@ -364,7 +364,7 @@ claim a forensic seal, or declare a message safe because no rule matched.
 | Invariant | Existing mechanism / evidence |
 | --- | --- |
 | I1–I2 | Explicit `commitProcedure` handler; server review binding; review/held-key/double-tap browser checks |
-| I3 | Dexie validation/write queue; corrupted drafts cannot be overwritten until a new practice is chosen; review reload is revalidated server-side |
+| I3 | Dexie validation/write queue and revision guard; corrupted drafts cannot be overwritten until a new practice is chosen; cross-tab conflicts offer keep/reload; explicit clear-data removes local and server practice records; review reload is revalidated server-side |
 | I4 / I8 | SQLite ledger resolves only authored synthetic bills; persisted result never renders as verified without server lookup |
 | I5 / I7 | Per-step copy, primary action, native controls, contextual React Aria help and safe exits |
 | I6 | Axe/keyboard browser suite; physical screen reader and full manual zoom remain NOT RUN |
@@ -499,6 +499,9 @@ Do not "clean up" these during unrelated work:
 | `12000 ms` | Client request timeout | Becomes uncertain, never a failed/successful payment claim |
 | `60000 ms` | Pending example settlement delay | Deterministic scenario; settles only on server lookup and can be cancelled before settlement |
 | `2000 chars` | Optional message-help input limit | Bounded local analysis; no text persistence |
+| `7 days` | Session-cookie and ledger retention | Bounds shared-device exposure and database growth; see [SECURITY.md](docs/SECURITY.md) |
+| `30/min` | Mutation rate limit per session or client key | Bounds review/commit spam; the limiter is in-process, so edge limits are still required |
+| `100` / `50` | Maximum reviews / operations per session | Prevents one browser from filling the ledger; tested in `tests/ledger.test.ts` |
 | `2` | Distinct cue families for stronger caution | A heuristic product gate, not calibrated scam confidence |
 | `92` | Vendored skills in `.commandcode/skills/` | The full library as copied; a different count means skills were added or lost |
 | `1024` / `64` | Max skill `description` / `name` length (chars) | Agent Skills standard; `name` must also match its directory |
@@ -532,6 +535,9 @@ personal-hackathon/
   hearing quality, microphone reliability or a WCAG certification.
 - Deployment requires Node 24 and persistent local SQLite storage. There is no
   public deployment in this task. See [runbook](docs/RUNBOOK.md).
+- Security controls are implemented and technically tested, but no public-host
+  check or external penetration test was run; the in-process rate limiter and the
+  Next-compatible CSP are residual risks in [SECURITY.md](docs/SECURITY.md).
 - **13 skills exceed the 1024-char `description` cap:** `client-side-trust-boundary`,
   `cloud-control-plane-reasoning`, `container-trust-boundary`, `credential-material-triage`,
   `data-leakage-hunting`, `data-provenance-mapping`, `dual-use-behavior-adjudication`,

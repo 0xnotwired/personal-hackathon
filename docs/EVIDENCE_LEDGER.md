@@ -24,7 +24,7 @@ may shorten the detail but may not promote confidence or widen scope.
 | ID | Claim under consideration | Current status and origin | Evidence required before stronger wording | Wording allowed now |
 | --- | --- | --- | --- | --- |
 | C01 | Product target is understood, controlled, recoverable procedures | Documented: user discussion and PRODUCT.md | New design approval if the scope changes | “Diseñamos un acompañante para…” |
-| C02 | The app completes the simulated bill flow | Observed in scope: implemented tree on ai-1; Chromium end-to-end receipt/recovery tests | Device/user evidence before expanding to independent use | “El pago de práctica funciona de principio a fin en las pruebas de navegador” |
+| C02 | The app completes the simulated bill flow | Observed in scope: implemented tree on ai-1; 28-test Chromium receipt/recovery suite; HTTP boundary rejects foreign origins and accepts a same-host https origin | Device/user evidence before expanding to independent use | “El pago de práctica funciona de principio a fin en las pruebas de navegador” |
 | C03 | The app pays a real utility bill | Outside scope by explicit user clarification; not a release blocker | Would require a separate future scope request; do not seek live integration for this product | “Es un simulador completo: no realiza pagos reales” |
 | C04 | People complete the task independently | Hypothesis H1/H4; no sessions | Versioned participant observations and honest `x/n` with assistance/stop counts | “Vamos a medir comprensión y autonomía” |
 | C05 | Voice is usable on supported phones | Browser adapter implemented; stubbed controls, denial and absent-API paths observed; physical speech NOT RUN | Actual mobile input/output records | “Hay voz opcional con alternativas completas; falta comprobarla en teléfonos físicos” |
@@ -57,6 +57,45 @@ Implemented blue/cyan phone shell, labeled navigation, manifest/icons and browse
 checks. This is a user-requested visual direction, not a verified official design
 system, partnership, native binary, store release or tested physical installation.
 Allowed: “Una app móvil web con estilo azul/celeste inspirado en Personal”.
+
+### C16 — a stale tab cannot silently replace newer saved progress
+
+Observed in scope on 2026-10-21: a two-page Chromium test first reproduced a stale
+tab overwriting a newer draft with no warning, then passed after revisioned
+IndexedDB writes and an explicit keep/reload choice. The test verifies that the
+newer record survives until the person deliberately replaces it. This covers the
+designed two-tab case in one browser profile; it does not cover different
+browsers/profiles, storage eviction, or user understanding.
+Allowed: “La app avisa si otra pestaña guardó un avance más nuevo y te deja elegir.”
+
+### C17 — security posture for a low-literacy audience
+
+Observed in scope on 2026-10-21: the walked practice contained no credential or
+card field and made no cross-origin HTTP request; production responses carried
+the declared headers; the session cookie was `HttpOnly`, `SameSite=strict` and
+`Secure` under a forwarded https scheme; clearing practice data removed the local
+record and the session's server rows; per-session caps, seven-day retention and
+the rate limiter have automated checks. Residual: no public deployment, no
+external penetration test, CSP still allows inline scripts for Next.js, and human
+comprehension of the security copy is NOT RUN. See [SECURITY.md](SECURITY.md).
+Allowed: “El simulador no pide claves ni datos de tarjeta, avisa que no es un banco
+y permite borrar los datos de práctica.”
+
+### C18 — simplified visual journey with a button budget
+
+Observed in scope on 2026-10-21: a red-first browser check counted visible
+actions per screen, failing on home (seven visible actions) before the change and
+passing after it with at most two actions outside the persistent flow bar on
+home, service, bill, review, waiting and result. Secondary controls (favourites,
+message help, practice history, data deletion) moved into one dialog; voice moved
+into the fixed "Voz" entry; the review shows the server-owned amount as the
+dominant element; animations are single-shot and respect reduced motion; the
+voice modal keeps three visible controls and hides repeat, speed and mute under
+"Opciones de lectura"; axe and the complete flow, safety, security and voice
+suites stayed green. This covers
+the mechanical design rules; it does not establish that the intended audience
+understands the simplified screens faster.
+Allowed: “La pantalla quedó con pocas acciones visibles y comprobado por test”.
 
 ## Per-claim evidence record
 

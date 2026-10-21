@@ -114,6 +114,16 @@ test('late response cannot replace a newer draft or pull someone back from home'
   actor.stop();
 });
 
+test('clearing local data resets the procedure without a draft', () => {
+  const actor = createActor(procedureMachine).start();
+  actor.send({ type: 'RESTORE', draft: null });
+  actor.send({ type: 'START' });
+  actor.send({ type: 'SELECT', service: 'luz' });
+  actor.send({ type: 'RESET' });
+  assert.equal(actor.getSnapshot().value, 'home');
+  assert.equal(actor.getSnapshot().context.draft, null);
+  actor.stop();
+});
 test('service choice and entered bill survive backward navigation', () => {
   const actor = createActor(procedureMachine).start();
   actor.send({ type: 'RESTORE', draft: null });

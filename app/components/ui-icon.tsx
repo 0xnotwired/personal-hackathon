@@ -52,6 +52,12 @@ export function Icon({ name, size = 24 }: { name: string; size?: number }) {
         <path d="m3 10 9-7 9 7M5 9v12h14V9m-10 12v-7h6v7" />
       </>
     ),
+    trash: (
+      <>
+        <path d="M4 7h16M9 7V5h6v2m-8 0 1 13h8l1-13" />
+        <path d="M10 11v5m4-5v5" />
+      </>
+    ),
   };
   return (
     <svg

@@ -13,7 +13,8 @@ export type PracticeEvent =
   | { type: 'BACK' }
   | { type: 'CONFIRM' }
   | { type: 'VERIFIED'; operation: Operation }
-  | { type: 'OPEN'; operation: Operation };
+  | { type: 'OPEN'; operation: Operation }
+  | { type: 'RESET' };
 const restoreTargets = (['service', 'bill', 'review', 'submitting', 'result'] as const).map(
   (step) => ({
     guard: ({ context }: { context: Context }) => context.draft?.step === step,
@@ -64,6 +65,7 @@ export const procedureMachine = setup({
       }),
     },
     VERIFIED: { guard: 'matchingResult', target: '.result', actions: 'recordResult' },
+    RESET: { target: '.home', actions: assign({ draft: () => null }) },
   },
   states: {
     loading: {

@@ -15,12 +15,13 @@ test('denied microphone preserves the whole touch journey', async ({ page }) => 
     Object.defineProperty(window, 'SpeechRecognition', { value: Recognition, configurable: true });
   });
   await page.goto('/');
-  await page.getByRole('button', { name: 'Ver controles de voz' }).click();
+  await page.getByRole('navigation').getByRole('button', { name: 'Voz', exact: true }).click();
   await expect(page.getByText(/Tu navegador puede enviar texto o audio/)).toBeVisible();
   await page.getByRole('button', { name: 'Hablar con la app', exact: true }).click();
   await expect(
     page.getByText('El micrófono no está habilitado. Podés seguir con los botones.'),
   ).toBeVisible();
+  await page.getByRole('button', { name: 'Cerrar', exact: true }).click();
   await page.getByRole('button', { name: 'Quiero practicar', exact: true }).click();
   await page.getByRole('button', { name: 'Seguir con luz', exact: true }).click();
   await page.getByRole('button', { name: 'Usar este número de ejemplo' }).click();
@@ -72,7 +73,7 @@ test('speech adapter reads approved content, controls playback, never confirms b
   await page.getByRole('button', { name: 'Seguir con luz', exact: true }).click();
   await page.getByRole('button', { name: 'Usar este número de ejemplo' }).click();
   await page.getByRole('button', { name: 'Buscar factura', exact: true }).click();
-  await page.getByRole('button', { name: 'Ver controles de voz' }).click();
+  await page.getByRole('navigation').getByRole('button', { name: 'Voz', exact: true }).click();
   await page.getByRole('button', { name: 'Escuchar indicaciones', exact: true }).click();
   expect(await page.evaluate(() => (window as any).__speech.said.at(-1))).toContain(
     'Revisá antes de confirmar',
@@ -82,6 +83,7 @@ test('speech adapter reads approved content, controls playback, never confirms b
   await page.getByRole('button', { name: 'Hablar con la app', exact: true }).click();
   await expect(page.locator('#flow-error')).toContainText('Para confirmar un pago, usá el botón');
   expect((await (await page.request.get('/api/operations')).json()).length).toBe(0);
+  await page.getByText('Opciones de lectura', { exact: true }).click();
   await page.getByRole('button', { name: 'Silenciar voz', exact: true }).click();
   await page.getByRole('button', { name: 'Escuchar indicaciones', exact: true }).click();
   await expect(
@@ -89,6 +91,35 @@ test('speech adapter reads approved content, controls playback, never confirms b
   ).toBeVisible();
   expect(await page.evaluate(() => (window as any).__speech.paused)).toBe(1);
   expect(await page.evaluate(() => (window as any).__speech.resumed)).toBe(1);
+});
+test('microphone capture stops when the page becomes hidden', async ({ page }) => {
+  await page.addInitScript(() => {
+    const state = { started: 0, aborted: 0 };
+    (window as any).__mic = state;
+    class Recognition {
+      onresult: ((e: any) => void) | null = null;
+      onerror: ((e: any) => void) | null = null;
+      onend: (() => void) | null = null;
+      start() {
+        state.started++;
+      }
+      abort() {
+        state.aborted++;
+        this.onend?.();
+      }
+    }
+    Object.defineProperty(window, 'SpeechRecognition', { value: Recognition, configurable: true });
+  });
+  await page.goto('/');
+  await page.getByRole('navigation').getByRole('button', { name: 'Voz', exact: true }).click();
+  await page.getByRole('button', { name: 'Hablar con la app', exact: true }).click();
+  expect(await page.evaluate(() => (window as any).__mic.started)).toBe(1);
+  await page.evaluate(() => {
+    Object.defineProperty(document, 'visibilityState', { value: 'hidden', configurable: true });
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  expect(await page.evaluate(() => (window as any).__mic.aborted)).toBe(1);
+  await expect(page.getByRole('button', { name: 'Hablar con la app', exact: true })).toBeVisible();
 });
 test('unavailable IndexedDB is visible and does not prevent a verified practice', async ({
   page,
@@ -140,12 +171,13 @@ test('entire journey remains operable when both speech APIs are unavailable', as
     Object.defineProperty(window, 'speechSynthesis', { value: undefined, configurable: true });
   });
   await page.goto('/');
-  await page.getByRole('button', { name: 'Ver controles de voz' }).click();
+  await page.getByRole('navigation').getByRole('button', { name: 'Voz', exact: true }).click();
   await expect(
     page.getByText(
       'La lectura en voz alta no está disponible en este navegador. Podés seguir con los textos.',
     ),
   ).toBeVisible();
+  await page.getByRole('button', { name: 'Cerrar', exact: true }).click();
   await page.getByRole('button', { name: 'Quiero practicar', exact: true }).click();
   await page.getByRole('button', { name: 'Seguir con luz', exact: true }).click();
   await page.getByRole('button', { name: 'Usar este número de ejemplo' }).click();

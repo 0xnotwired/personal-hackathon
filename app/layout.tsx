@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 export const metadata: Metadata = {
-  title: 'Personal · Autonomía Digital',
-  applicationName: 'Personal · Autonomía Digital',
+  title: 'Autonomía Digital',
+  applicationName: 'Autonomía Digital',
   manifest: '/manifest.webmanifest',
   icons: { icon: '/icon-192.png', apple: '/icon-180.png' },
   appleWebApp: { capable: true, statusBarStyle: 'default', title: 'Autonomía' },

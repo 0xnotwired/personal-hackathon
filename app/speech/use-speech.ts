@@ -35,7 +35,19 @@ export function useSpeech(onCommand: (value: Command) => void, rate: number, mut
         (window as SpeechWindow).webkitSpeechRecognition,
       ),
     );
+    const stopCapture = () => {
+      recognition.current?.abort();
+      recognition.current = null;
+      setState('idle');
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') stopCapture();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('pagehide', stopCapture);
     return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('pagehide', stopCapture);
       window.speechSynthesis?.cancel();
       recognition.current?.abort();
     };

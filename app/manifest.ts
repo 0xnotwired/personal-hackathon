@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Personal · Autonomía Digital',
+    name: 'Autonomía Digital',
     short_name: 'Autonomía',
     description: 'Practicá tus trámites a tu ritmo. No se mueve dinero.',
     start_url: '/',

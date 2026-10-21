@@ -2,6 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
 import { ZodType } from 'zod';
 const cookieName = 'autonomia-session';
+function isSecure(req: NextRequest) {
+  const forwarded = req.headers.get('x-forwarded-proto')?.split(',')[0]?.trim();
+  return forwarded === 'https' || req.nextUrl.protocol === 'https:';
+}
+function cookieOptions(req: NextRequest) {
+  return {
+    httpOnly: true,
+    sameSite: 'strict' as const,
+    secure: isSecure(req),
+    path: '/',
+  };
+}
 export function session(req: NextRequest) {
   const id = req.cookies.get(cookieName)?.value;
   return id && /^[0-9a-f-]{36}$/.test(id) ? id : undefined;
@@ -10,16 +22,28 @@ export function json(req: NextRequest, data: unknown, status = 200, newSession?:
   const res = NextResponse.json(data, { status, headers: { 'Cache-Control': 'no-store' } });
   if (newSession)
     res.cookies.set(cookieName, newSession, {
-      httpOnly: true,
-      sameSite: 'strict',
-      secure: req.nextUrl.protocol === 'https:',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30,
+      ...cookieOptions(req),
+      maxAge: 60 * 60 * 24 * 7,
     });
   return res;
 }
+export function clearSession(req: NextRequest, res: NextResponse) {
+  res.cookies.set(cookieName, '', { ...cookieOptions(req), maxAge: 0 });
+}
 export function sameOrigin(req: NextRequest) {
-  if (req.headers.get('origin') !== `${req.nextUrl.protocol}//${req.headers.get('host')}`)
+  const origin = req.headers.get('origin');
+  const host = req.headers.get('host');
+  if (!origin || !host)
+    throw new Error('Abrí esta página desde su dirección original para continuar.');
+  let source: URL;
+  try {
+    source = new URL(origin);
+  } catch {
+    throw new Error('Abrí esta página desde su dirección original para continuar.');
+  }
+  // Compare hosts, not schemes: a TLS-terminating proxy may present https to the
+  // browser while the Node process receives the request over http.
+  if (!['http:', 'https:'].includes(source.protocol) || source.host !== host)
     throw new Error('Abrí esta página desde su dirección original para continuar.');
 }
 export async function parse<T>(req: NextRequest, schema: ZodType<T>): Promise<T> {

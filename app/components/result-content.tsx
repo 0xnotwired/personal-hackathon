@@ -10,7 +10,6 @@ type Props = {
   onCancel: () => void;
   onDownload: () => void;
   onRepeat: () => void;
-  onHome: () => void;
 };
 export function ResultContent({
   operation,
@@ -19,7 +18,6 @@ export function ResultContent({
   onCancel,
   onDownload,
   onRepeat,
-  onHome,
 }: Props) {
   return (
     <>
@@ -71,9 +69,7 @@ export function ResultContent({
       <Button className="button secondary full" onPress={onRepeat}>
         Volver a practicar
       </Button>
-      <Button className="text-button" onPress={onHome}>
-        Ir al inicio
-      </Button>
+      <p className="small-text">Usá “Volver al inicio” arriba para empezar otra cosa.</p>
     </>
   );
 }

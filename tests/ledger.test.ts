@@ -4,7 +4,12 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
-import { Ledger } from '../app/lib/server/ledger';
+import {
+  Ledger,
+  MAX_OPERATIONS_PER_SESSION,
+  MAX_REVIEWS_PER_SESSION,
+  RETENTION_MS,
+} from '../app/lib/server/ledger';
 
 function fixture() {
   const dir = mkdtempSync(join(tmpdir(), 'autonomia-test-'));
@@ -23,6 +28,7 @@ function fixture() {
     tick: () => {
       time += 61000;
     },
+    now: () => time,
     clean: () => {
       ledger.close();
       rmSync(dir, { recursive: true, force: true });
@@ -70,7 +76,7 @@ test('confirmation is idempotent, survives reopen, and remains session isolated'
     assert.equal(a.status, 'succeeded');
     assert.equal(f.ledger.list(f.session).length, 1);
     assert.equal(f.ledger.get('other', a.id), undefined);
-    const reopened = new Ledger(f.path);
+    const reopened = new Ledger(f.path, f.now);
     assert.equal(reopened.get(f.session, a.id)?.id, a.id);
     reopened.close();
   } finally {
@@ -115,7 +121,7 @@ test('pending cancellation is persisted and idempotent; leaving is not cancellat
     assert.equal(f.ledger.cancel(f.session, op.id).status, 'cancelled');
     f.tick();
     assert.equal(f.ledger.cancel(f.session, op.id).status, 'cancelled');
-    const reopened = new Ledger(f.path);
+    const reopened = new Ledger(f.path, f.now);
     assert.equal(reopened.get(f.session, op.id)?.status, 'cancelled');
     reopened.close();
   } finally {
@@ -200,5 +206,84 @@ test('competing valid reviews created before submission cannot both commit', () 
     assert.equal(f.ledger.list(f.session).length, 1);
   } finally {
     f.clean();
+  }
+});
+test('review cap rejects unbounded attempts and clear releases the session', () => {
+  const f = fixture();
+  try {
+    for (let i = 0; i < MAX_REVIEWS_PER_SESSION; i++)
+      f.ledger.review(f.session, {
+        draftId: randomUUID(),
+        key: randomUUID(),
+        service: 'luz',
+        code: '100200300',
+      });
+    assert.throws(
+      () =>
+        f.ledger.review(f.session, {
+          draftId: randomUUID(),
+          key: randomUUID(),
+          service: 'luz',
+          code: '100200300',
+        }),
+      /límite de intentos/,
+    );
+    f.ledger.clear(f.session);
+    assert.ok(
+      f.ledger.review(f.session, {
+        draftId: randomUUID(),
+        key: randomUUID(),
+        service: 'luz',
+        code: '100200300',
+      }).id,
+    );
+  } finally {
+    f.clean();
+  }
+});
+test('operation cap prevents unbounded confirmed practices', () => {
+  const f = fixture();
+  try {
+    for (let i = 0; i < MAX_OPERATIONS_PER_SESSION; i++) {
+      const review = f.ledger.review(f.session, {
+        draftId: randomUUID(),
+        key: randomUUID(),
+        service: 'luz',
+        code: '100200300',
+      });
+      f.ledger.commit(f.session, review.id, review.key);
+    }
+    assert.equal(f.ledger.list(f.session).length, MAX_OPERATIONS_PER_SESSION);
+    const review = f.ledger.review(f.session, {
+      draftId: randomUUID(),
+      key: randomUUID(),
+      service: 'luz',
+      code: '100200300',
+    });
+    assert.throws(() => f.ledger.commit(f.session, review.id, review.key), /límite de operaciones/);
+  } finally {
+    f.clean();
+  }
+});
+test('records older than the retention window are removed on reopen', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'autonomia-retention-'));
+  const path = join(dir, 'ledger.sqlite');
+  const session = randomUUID();
+  try {
+    const first = new Ledger(path, () => 1000);
+    const review = first.review(session, {
+      draftId: randomUUID(),
+      key: randomUUID(),
+      service: 'luz',
+      code: '100200300',
+    });
+    first.commit(session, review.id, review.key);
+    assert.equal(first.list(session).length, 1);
+    first.close();
+    const second = new Ledger(path, () => 1000 + RETENTION_MS + 1);
+    assert.equal(second.list(session).length, 0);
+    second.close();
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
   }
 });

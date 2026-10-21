@@ -13,7 +13,14 @@ import {
   stepCopy,
 } from '../flows/contracts';
 import { examples } from '../flows/catalogue';
-import { load, save, beginNewDraft, Preferences } from '../lib/persistence';
+import {
+  load,
+  save,
+  clear as clearLocal,
+  beginNewDraft,
+  Preferences,
+  SaveConflictError,
+} from '../lib/persistence';
 import { request } from '../lib/api';
 import { useSpeech } from '../speech/use-speech';
 import { Icon } from './ui-icon';
@@ -36,17 +43,19 @@ export function PracticeApp() {
   });
   const [storage, setStorage] = useState('Preparando tu espacio…');
   const [storageError, setStorageError] = useState(false);
+  const [storageConflict, setStorageConflict] = useState(false);
   const [restoreNotice, setRestoreNotice] = useState('');
   const [historyPreview, setHistoryPreview] = useState<Operation | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const busyRef = useRef(false);
   const [help, setHelp] = useState(false);
-  const [smallStep, setSmallStep] = useState(false);
   const [safetyOpen, setSafetyOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
+  const [optionsOpen, setOptionsOpen] = useState(false);
   const [newOpen, setNewOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
+  const [clearOpen, setClearOpen] = useState(false);
   const [history, setHistory] = useState<Operation[]>([]);
   const [historyOpen, setHistoryOpen] = useState(false);
   const selectedService = draft?.service || 'luz';
@@ -62,8 +71,8 @@ export function PracticeApp() {
     (cmd) => {
       if (cmd === 'pay') {
         if (step === 'home') {
-          if (draft && !draft.operation) setNewOpen(true);
-          else send({ type: 'START' });
+          if (draft && !draft.operation) send({ type: 'RESUME' });
+          else start();
         } else setHelp(true);
       }
       if (cmd === 'repeat') speech.speak(text);
@@ -162,11 +171,18 @@ export function PracticeApp() {
         if (active) {
           setStorage('Tu avance se guardó en este navegador.');
           setStorageError(false);
+          setStorageConflict(false);
         }
       })
-      .catch(() => {
-        if (active) {
-          setStorageError(true);
+      .catch((e) => {
+        if (!active) return;
+        setStorageError(true);
+        if (e instanceof SaveConflictError) {
+          setStorageConflict(true);
+          setStorage(
+            'Otra pestaña cambió esta práctica. Para no perder ese avance, recargá esta página. Si querés conservar lo que escribiste acá, guardá esta versión.',
+          );
+        } else {
           setStorage(
             'No pudimos guardar. Podés seguir, pero no cierres la página si querés conservar tu avance.',
           );
@@ -180,7 +196,6 @@ export function PracticeApp() {
     if (step === 'loading') return;
     setError('');
     setHelp(false);
-    setSmallStep(false);
     setReadyToConfirm(false);
     speech.stop();
     title.current?.focus();
@@ -210,9 +225,45 @@ export function PracticeApp() {
   function start() {
     beginNewDraft();
     setRestoreNotice('');
+    setStorageConflict(false);
     setNewOpen(false);
     speech.stop();
     send({ type: 'START' });
+  }
+  function keepThisVersion() {
+    work(async () => {
+      await save({ id: 'current', draft, preferences }, { force: true });
+      setStorageConflict(false);
+      setStorageError(false);
+      setStorage('Guardamos la versión de esta pestaña.');
+    });
+  }
+  function clearData() {
+    work(async () => {
+      let serverCleared = true;
+      try {
+        await request('/api/session', {});
+      } catch {
+        serverCleared = false;
+      }
+      await clearLocal();
+      setPreferences({ favorite: false, rate: 0.85, muted: false });
+      setHistory([]);
+      setHistoryOpen(false);
+      setHistoryPreview(null);
+      setOptionsOpen(false);
+      setRestoreNotice(
+        serverCleared
+          ? ''
+          : 'Borramos los datos de este navegador. No pudimos confirmar el borrado del registro del servidor; podés intentarlo de nuevo.',
+      );
+      setStorageError(false);
+      setStorageConflict(false);
+      setStorage('Tus datos de práctica se borraron de este navegador.');
+      setClearOpen(false);
+      speech.stop();
+      send({ type: 'RESET' });
+    });
   }
   async function findBill() {
     if (!draft) return;
@@ -260,7 +311,7 @@ export function PracticeApp() {
   function download() {
     if (!draft?.operation) return;
     const op = draft.operation;
-    const content = `COMPROBANTE DE PRÁCTICA\nModo práctica — no se mueve dinero\nNo es un pago real ni un comprobante válido de pago.\n\n${resultCopy[op.status].title}\nEmpresa: ${op.bill.company}\nTitular: ${op.bill.holder}\nCuenta: ${op.bill.account}\nMes: ${op.bill.period}\nFactura: ${op.bill.code}\nImporte ficticio: ${money(op.bill.amount)}\nReferencia: ${op.id}\nFecha: ${new Date(op.createdAt).toLocaleString('es-AR')}\n`;
+    const content = `COMPROBANTE DE PRÁCTICA\nModo práctica — no se mueve dinero\nAutonomía Digital es un simulador. No es tu banco ni una app de pagos real.\nNo es un pago real ni un comprobante válido de pago.\n\n${resultCopy[op.status].title}\nEmpresa: ${op.bill.company}\nTitular: ${op.bill.holder}\nCuenta: ${op.bill.account}\nMes: ${op.bill.period}\nFactura: ${op.bill.code}\nImporte ficticio: ${money(op.bill.amount)}\nReferencia: ${op.id}\nFecha: ${new Date(op.createdAt).toLocaleString('es-AR')}\n`;
     const url = URL.createObjectURL(new Blob([content], { type: 'text/plain;charset=utf-8' }));
     const link = document.createElement('a');
     link.href = url;
@@ -269,12 +320,15 @@ export function PracticeApp() {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   const op = draft?.operation;
+  const pointed = help ? ' is-pointed' : '';
   return (
     <div className="app-shell">
       <header className="site-header">
         <button className="brand" onClick={leave} aria-label="Autonomía Digital, ir al inicio">
-          <span className="personal-wordmark">
-            personal<span className="brand-sub">AUTONOMÍA DIGITAL</span>
+          <img className="brand-icon" src="/app-icon.svg" alt="" width={34} height={34} />
+          <span className="product-wordmark">
+            Autonomía Digital
+            <span className="brand-sub">PRÁCTICA DIGITAL</span>
           </span>
         </button>
         <Button
@@ -315,6 +369,12 @@ export function PracticeApp() {
                       ? 'Guardar y salir'
                       : 'Volver al paso anterior'}
                 </Button>
+                {(step === 'bill' || step === 'review') && (
+                  <Button className="text-button safety-entry" onPress={() => setSafetyOpen(true)}>
+                    <Icon name="shield" />
+                    Me están apurando para pagar
+                  </Button>
+                )}
                 <span className="step-label">
                   {step === 'service'
                     ? 'Paso 1 de 4'
@@ -329,16 +389,13 @@ export function PracticeApp() {
             {step === 'home' ? (
               <HomeContent
                 draft={draft}
-                preferences={preferences}
+                favorite={preferences.favorite}
                 title={title}
-                onResume={() => send({ type: 'RESUME' })}
-                onStart={start}
-                onNew={() => setNewOpen(true)}
-                onFavorite={() => setPreferences((p) => ({ ...p, favorite: !p.favorite }))}
-                onWelcome={() => {
-                  setVoiceOpen(true);
-                  speech.speak(text);
+                onPrimary={() => {
+                  if (draft && !draft.operation) send({ type: 'RESUME' });
+                  else start();
                 }}
+                onOptions={() => setOptionsOpen(true)}
               />
             ) : (
               <div className="procedure-layout">
@@ -349,7 +406,6 @@ export function PracticeApp() {
                   </h1>
                   {step === 'service' && (
                     <>
-                      <p>Elegí un servicio. Vamos a usar una factura inventada.</p>
                       <fieldset className="service-options">
                         <legend className="sr-only">Elegí un servicio</legend>
                         {(['luz', 'gas', 'agua'] as Service[]).map((service) => (
@@ -374,40 +430,36 @@ export function PracticeApp() {
                         ))}
                       </fieldset>
                       <Button
-                        className="button primary full"
+                        className={'button primary full' + pointed}
                         onPress={() => send({ type: 'SELECT', service: selectedService })}
                       >
                         Seguir con {serviceNames[selectedService].toLowerCase()}
                         <Icon name="arrow" />
                       </Button>
-                      <p className="note">No necesitás tener una factura a mano.</p>
                     </>
                   )}
                   {step === 'bill' && draft && (
                     <>
-                      <p>
-                        Para practicar con {serviceNames[draft.service].toLowerCase()}, copiá el
-                        número de esta factura de ejemplo.
-                      </p>
                       <div className="example-bill">
                         <span className="eyebrow">
                           FACTURA FICTICIA · {serviceNames[draft.service].toUpperCase()}
                         </span>
-                        <strong>{examples(draft.service)[0].code}</strong>
+                        <strong className="pulse-target">
+                          {examples(draft.service)[0].code}
+                          <span className="pulse-dot" aria-hidden="true" />
+                        </strong>
                         <span>Marta Ejemplo · Octubre de 2026</span>
                       </div>
                       <label className="field-label" htmlFor="bill-code">
                         Número de factura de práctica
                       </label>
                       <p id="bill-hint" className="field-hint">
-                        Son 9 cifras. Ejemplo: {examples(draft.service)[0].code}. No uses una
-                        factura real.
+                        Son 9 cifras. No uses una factura real.
                       </p>
                       <input
                         id="bill-code"
                         inputMode="numeric"
                         autoComplete="off"
-                        maxLength={9}
                         value={draft.code}
                         aria-describedby={'bill-hint' + (error ? ' flow-error' : '')}
                         aria-invalid={!!error}
@@ -430,7 +482,7 @@ export function PracticeApp() {
                         Usar este número de ejemplo
                       </Button>
                       <Button
-                        className="button primary full"
+                        className={'button primary full' + pointed}
                         isDisabled={busy || draft.code.length !== 9}
                         onPress={findBill}
                       >
@@ -459,17 +511,22 @@ export function PracticeApp() {
                   )}
                   {step === 'review' && draft?.review && (
                     <>
-                      <p>
-                        Comprobá a quién corresponde la factura y cuánto vas a pagar en esta
-                        práctica.
-                      </p>
-                      <BillDetails bill={draft.review.bill} />
+                      <div className="receipt-visual">
+                        <strong>{money(draft.review.bill.amount)}</strong>
+                        <span>
+                          {draft.review.bill.company} · {draft.review.bill.period}
+                        </span>
+                      </div>
+                      <details className="receipt-fold">
+                        <summary>Ver todo</summary>
+                        <BillDetails bill={draft.review.bill} />
+                      </details>
                       <div className="quiet-notice">
                         <Icon name="shield" />
                         <span>Este es un ensayo. No se va a mover dinero.</span>
                       </div>
                       <Button
-                        className="button primary full confirm-button"
+                        className={'button primary full confirm-button' + pointed}
                         isDisabled={busy || !readyToConfirm}
                         onKeyDown={(e) => {
                           if (e.repeat) e.preventDefault();
@@ -494,7 +551,11 @@ export function PracticeApp() {
                         Si se cortó la conexión, podés consultar de nuevo. Salir de esta pantalla no
                         cancela la operación.
                       </p>
-                      <Button className="button primary full" isDisabled={busy} onPress={reconcile}>
+                      <Button
+                        className={'button primary full' + pointed}
+                        isDisabled={busy}
+                        onPress={reconcile}
+                      >
                         {busy ? 'Consultando…' : 'Consultar resultado'}
                       </Button>
                       {!busy && error.includes('no tiene una operación') && (
@@ -508,9 +569,6 @@ export function PracticeApp() {
                           Volver a revisar la misma factura
                         </Button>
                       )}
-                      <Button className="text-button" onPress={() => setNewOpen(true)}>
-                        Comenzar otra práctica
-                      </Button>
                     </>
                   )}
                   {step === 'result' && op && (
@@ -521,40 +579,9 @@ export function PracticeApp() {
                       onCancel={() => setCancelOpen(true)}
                       onDownload={download}
                       onRepeat={start}
-                      onHome={leave}
                     />
                   )}
                 </section>
-                <aside className="flow-companion">
-                  <span className="circle-icon">
-                    <Icon name="help" size={30} />
-                  </span>
-                  <h2>Un paso a la vez</h2>
-                  <p>Podés volver atrás, pedir ayuda o dejar tu práctica para después.</p>
-                  <p className="small-text">
-                    No te vamos a pedir contraseñas ni datos de tarjetas.
-                  </p>
-                  <Button className="button secondary full" onPress={leave}>
-                    Guardar y salir al inicio
-                  </Button>
-                  {(step === 'bill' || step === 'review') && (
-                    <Button
-                      className="text-button safety-entry"
-                      onPress={() => setSafetyOpen(true)}
-                    >
-                      <Icon name="shield" />
-                      Me están apurando para pagar
-                    </Button>
-                  )}
-                </aside>
-              </div>
-            )}
-            {step === 'home' && (
-              <div className="home-safety-entry">
-                <Button className="text-button" onPress={() => setSafetyOpen(true)}>
-                  <Icon name="shield" />
-                  Quiero revisar un mensaje que me pide pagar
-                </Button>
               </div>
             )}
             {restoreNotice && (
@@ -580,13 +607,8 @@ export function PracticeApp() {
                     <Icon name="help" />
                     <Heading slot="title">¿Qué hago ahora?</Heading>
                   </div>
-                  <p>{smallStep ? nextMove[step].instruction : stepCopy[step].help}</p>
-                  {!smallStep && (
-                    <Button className="button secondary full" onPress={() => setSmallStep(true)}>
-                      Mostrarme el próximo paso
-                    </Button>
-                  )}
-                  {smallStep && step === 'bill' && draft && (
+                  <p>{nextMove[step].instruction}</p>
+                  {step === 'bill' && draft && (
                     <Button
                       className="button secondary full"
                       onPress={() => {
@@ -595,6 +617,11 @@ export function PracticeApp() {
                       }}
                     >
                       Usar un número de ejemplo en mi factura
+                    </Button>
+                  )}
+                  {step !== 'home' && step !== 'result' && (
+                    <Button className="button secondary full" onPress={leave}>
+                      Guardar mi práctica y salir
                     </Button>
                   )}
                   <Button className="button secondary" onPress={() => speech.speak(text)}>
@@ -607,14 +634,6 @@ export function PracticeApp() {
                 </Dialog>
               </Modal>
             </ModalOverlay>
-            <VoiceControls
-              open={voiceOpen}
-              onToggle={() => setVoiceOpen((v) => !v)}
-              speech={speech}
-              text={text}
-              preferences={preferences}
-              onPreferences={setPreferences}
-            />
 
             <div
               className={'storage-status ' + (storageError ? 'storage-warning' : '')}
@@ -622,64 +641,32 @@ export function PracticeApp() {
             >
               <Icon name={storageError ? 'help' : 'check'} size={18} />
               <span>{storage}</span>
-              {storageError && (
-                <Button
-                  className="text-button"
-                  onPress={() => {
-                    work(async () => {
-                      await save({ id: 'current', draft, preferences });
-                      setStorageError(false);
-                      setStorage('Tu avance se guardó en este navegador.');
-                    });
-                  }}
-                >
-                  Intentar guardar otra vez
-                </Button>
+              {storageConflict ? (
+                <span className="storage-actions">
+                  <Button className="text-button" onPress={keepThisVersion}>
+                    Conservar mi versión
+                  </Button>
+                  <Button className="text-button" onPress={() => window.location.reload()}>
+                    Recargar y ver lo más reciente
+                  </Button>
+                </span>
+              ) : (
+                storageError && (
+                  <Button
+                    className="text-button"
+                    onPress={() => {
+                      work(async () => {
+                        await save({ id: 'current', draft, preferences });
+                        setStorageError(false);
+                        setStorage('Tu avance se guardó en este navegador.');
+                      });
+                    }}
+                  >
+                    Intentar guardar otra vez
+                  </Button>
+                )
               )}
             </div>
-            {step === 'home' && (
-              <section className="history-section">
-                <Button
-                  className="text-button"
-                  aria-expanded={historyOpen}
-                  onPress={() => {
-                    setHistoryOpen((h) => !h);
-                    if (!historyOpen)
-                      work(async () => setHistory(await request<Operation[]>('/api/operations')));
-                  }}
-                >
-                  <Icon name="clock" />
-                  Ver mis prácticas anteriores
-                </Button>
-                {historyOpen && (
-                  <div>
-                    <h2>Prácticas en este navegador</h2>
-                    {!history.length && !busy && <p>Todavía no hay prácticas registradas.</p>}
-                    {history.map((operation) => (
-                      <Button
-                        className="history-item"
-                        key={operation.id}
-                        onPress={() =>
-                          work(async () => {
-                            const verified = await request<Operation>(
-                              '/api/operations/' + operation.id,
-                            );
-                            if (draft && !draft.operation) setHistoryPreview(verified);
-                            else send({ type: 'OPEN', operation: verified });
-                          })
-                        }
-                      >
-                        <span>
-                          {serviceNames[operation.bill.service]} · {money(operation.bill.amount)}
-                          <small>{resultCopy[operation.status].title}</small>
-                        </span>
-                        <Icon name="arrow" />
-                      </Button>
-                    ))}
-                  </div>
-                )}
-              </section>
-            )}
           </>
         )}
       </main>
@@ -692,27 +679,13 @@ export function PracticeApp() {
           <Icon name="help" />
           Ayuda
         </Button>
-        <Button
-          className="nav-button"
-          aria-expanded={voiceOpen}
-          onPress={() => {
-            setVoiceOpen(true);
-            requestAnimationFrame(() =>
-              document.getElementById('voice-controls')?.scrollIntoView({
-                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
-                  ? 'auto'
-                  : 'smooth',
-                block: 'start',
-              }),
-            );
-          }}
-        >
+        <Button className="nav-button" aria-expanded={voiceOpen} onPress={() => setVoiceOpen(true)}>
           <Icon name="sound" />
           Voz
         </Button>
       </nav>
       <footer className="site-footer">
-        <span>Personal · Autonomía Digital</span>
+        <span>Autonomía Digital</span>
         <span>Aprender también es animarse a probar.</span>
         <span>Hecho para ir a tu ritmo.</span>
       </footer>
@@ -817,6 +790,173 @@ export function PracticeApp() {
             </Button>
             <Button className="button secondary full" onPress={() => setCancelOpen(false)}>
               Seguir esperando el resultado
+            </Button>
+          </Dialog>
+        </Modal>
+      </ModalOverlay>
+      <ModalOverlay
+        isOpen={clearOpen}
+        onOpenChange={setClearOpen}
+        isDismissable
+        className="modal-overlay"
+      >
+        <Modal className="modal">
+          <Dialog>
+            <Heading slot="title">¿Borrar todo lo guardado?</Heading>
+            <p>
+              Se borran el borrador, los favoritos y las prácticas anteriores de este navegador.
+              También pedimos borrar el registro de práctica del servidor. No se puede deshacer.
+            </p>
+            <Button className="button primary full" isDisabled={busy} onPress={clearData}>
+              Sí, borrar todo
+            </Button>
+            <Button className="button secondary full" onPress={() => setClearOpen(false)}>
+              No, conservar mis datos
+            </Button>
+          </Dialog>
+        </Modal>
+      </ModalOverlay>
+      <ModalOverlay
+        isOpen={optionsOpen}
+        onOpenChange={setOptionsOpen}
+        isDismissable
+        className="modal-overlay"
+      >
+        <Modal className="modal">
+          <Dialog>
+            <Heading slot="title">Ayuda y opciones</Heading>
+            <Button
+              className="button secondary full"
+              onPress={() => {
+                setOptionsOpen(false);
+                speech.speak(text);
+              }}
+            >
+              <Icon name="sound" />
+              Escuchar la bienvenida
+            </Button>
+            <Button
+              className="button secondary full"
+              onPress={() => {
+                setOptionsOpen(false);
+                setSafetyOpen(true);
+              }}
+            >
+              <Icon name="shield" />
+              Quiero revisar un mensaje que me pide pagar
+            </Button>
+            <Button
+              className="text-button"
+              aria-expanded={historyOpen}
+              onPress={() => {
+                setHistoryOpen((h) => !h);
+                if (!historyOpen)
+                  work(async () => setHistory(await request<Operation[]>('/api/operations')));
+              }}
+            >
+              <Icon name="clock" />
+              Ver mis prácticas anteriores
+            </Button>
+            {historyOpen && (
+              <div>
+                <h2>Prácticas en este navegador</h2>
+                {!history.length && !busy && <p>Todavía no hay prácticas registradas.</p>}
+                {history.map((operation) => (
+                  <Button
+                    className="history-item"
+                    key={operation.id}
+                    onPress={() =>
+                      work(async () => {
+                        const verified = await request<Operation>(
+                          '/api/operations/' + operation.id,
+                        );
+                        if (draft && !draft.operation) setHistoryPreview(verified);
+                        else {
+                          setOptionsOpen(false);
+                          send({ type: 'OPEN', operation: verified });
+                        }
+                      })
+                    }
+                  >
+                    <span>
+                      {serviceNames[operation.bill.service]} · {resultCopy[operation.status].title}
+                      <small>
+                        {new Date(operation.createdAt).toLocaleDateString('es-AR')} · Tocá para ver
+                        el detalle
+                      </small>
+                    </span>
+                    <Icon name="arrow" />
+                  </Button>
+                ))}
+              </div>
+            )}
+            <Button
+              className="text-button"
+              aria-pressed={preferences.favorite}
+              onPress={() => setPreferences((p) => ({ ...p, favorite: !p.favorite }))}
+            >
+              <Icon name="star" />
+              {preferences.favorite
+                ? 'Quitar Pagar una factura en favoritos'
+                : 'Guardar Pagar una factura en favoritos'}
+            </Button>
+            {draft && !draft.operation && (
+              <Button
+                className="text-button"
+                onPress={() => {
+                  setOptionsOpen(false);
+                  setNewOpen(true);
+                }}
+              >
+                Empezar una práctica desde el principio
+              </Button>
+            )}
+            <Button
+              className="text-button"
+              onPress={() => {
+                setOptionsOpen(false);
+                setClearOpen(true);
+              }}
+            >
+              <Icon name="trash" />
+              Borrar mis datos de práctica
+            </Button>
+            <p className="small-text">
+              Guardamos el borrador, los favoritos y las prácticas de este navegador. Podés
+              borrarlos cuando quieras.
+            </p>
+            <Button className="button primary full" onPress={() => setOptionsOpen(false)}>
+              Cerrar
+            </Button>
+          </Dialog>
+        </Modal>
+      </ModalOverlay>
+      <ModalOverlay
+        isOpen={voiceOpen}
+        onOpenChange={(open) => {
+          setVoiceOpen(open);
+          if (!open) speech.stop();
+        }}
+        isDismissable
+        className="modal-overlay"
+      >
+        <Modal className="modal">
+          <Dialog>
+            <Heading slot="title">Voz y lectura</Heading>
+            <VoiceControls
+              speech={speech}
+              text={text}
+              preferences={preferences}
+              onPreferences={setPreferences}
+            />
+            <Button
+              className="button primary full"
+              onPress={() => {
+                setVoiceOpen(false);
+                speech.stop();
+              }}
+            >
+              Cerrar
             </Button>
           </Dialog>
         </Modal>

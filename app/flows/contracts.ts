@@ -36,7 +36,7 @@ export type Operation = {
 export const stepCopy = {
   home: {
     title: '¿Qué necesitás hacer?',
-    help: 'Elegí Pagar una factura para practicar. No necesitás una cuenta ni datos bancarios.',
+    help: 'Elegí Pagar una factura para practicar. Es un simulador: no es tu banco ni una app de pagos real, y no necesitás una cuenta ni datos bancarios.',
     primary: 'Pagar una factura',
     back: 'Inicio',
   },
