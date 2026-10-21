@@ -2,9 +2,10 @@
 
 Observed date: 2026-10-21. Baseline before construction:
 `c2c3d988a01b740654fb76454c459e711ac0ec03`. Implementation is the source tree
-accompanying this record on **ai-1**, created at the user's request after work on
-devin. The current continuation task does not authorize commit, push or merge;
-the changes described below live in the working tree. Devin AI is not required.
+accompanying this record on **`final`** at commit **`18a4bda`** (pushed to
+`origin/final`); `ai-1` is the prior implementation branch. A documentation sync
+made after that commit may be uncommitted in the working tree. Devin AI is not
+required.
 
 [Root contract](../AGENTS.md) · [Runbook](RUNBOOK.md) · [Mobile UI](DESIGN_SYSTEM.md) ·
 [Security](SECURITY.md) · [Companion contract](COMPANION_CONTRACT.md) ·
@@ -71,7 +72,7 @@ not a promise that future edits pass. Test artifacts are generated/ignored in
 inferred from test counts. The e2e server is started and stopped by Playwright;
 retained files/dependencies do not imply a process survives a new cloud task.
 
-### Continuation verification (2026-10-21, working tree on ai-1)
+### Delivery verification (2026-10-21, `final` @ `18a4bda`)
 
 - `npm run verify` completed: typecheck, 26 unit tests, production build, 29
   browser tests and format check.

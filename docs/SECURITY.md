@@ -1,7 +1,8 @@
 # Security and safety posture — Autonomía Digital
 
 Status: implemented controls, threat model and residual risks observed on 2026-10-21
-in the working tree on `ai-1` (base commit `9cadff9`; no commit or push authorized).
+in `final` at commit `18a4bda` (pushed to `origin/final`). A later documentation
+sync may be uncommitted in the working tree.
 This is a practice simulator: it cannot move money and never asks for financial
 credentials. Root product rules remain in [AGENTS.md](../AGENTS.md); evidence
 scope remains in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) and

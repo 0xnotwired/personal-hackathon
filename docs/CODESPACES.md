@@ -1,7 +1,8 @@
 # Continue in GitHub Codespaces
 
-1. Select branch **ai-1** on GitHub, then Code → Codespaces → Create codespace.
-   Direct link: https://codespaces.new/0xnotwired/personal-hackathon?ref=ai-1
+1. Select branch **final** on GitHub, then Code → Codespaces → Create codespace.
+   Direct link: https://codespaces.new/0xnotwired/personal-hackathon?ref=final
+   (`ai-1` remains the prior implementation branch.)
 2. The checked-in dev container supplies Node 24 and runs `.devcontainer/setup.sh`:
    installs Chromium if missing, installs the exact npm lockfile and runs the
    type/domain/build/browser/format checks. It needs no app/provider secrets.
@@ -18,11 +19,13 @@ If creation was interrupted or the checkout predates this container config, use
 needed. An AI extension still needs the user's own account/access; the app itself
 needs no Gemini, Qwen, OpenAI or financial API key.
 
-Current source: mobile Personal-inspired blue/cyan UI, complete synthetic utility
-bill flow, durable SQLite, drafts/favorites, optional voice, smaller-step help,
-and attributed Ímpetu/Gambit/Wolf adaptations. The first implementation passed
-21 domain/persistence tests and 23 Chromium tests. Do not inherit those counts
-as proof after new changes: run `npm run verify`.
+Current source: mobile Personal-inspired blue/cyan UI with one active task card
+plus "Ayuda y opciones", a procedure flow capped at two visible actions outside
+the fixed bar, durable SQLite, drafts/favorites, optional voice, smaller-step
+help, anti-impersonation notice, explicit data deletion and security headers.
+Attributed Ímpetu/Gambit/Wolf adaptations remain. The current build passed 26
+domain/persistence tests and 29 Chromium tests. Do not inherit those counts as
+proof after new changes: run `npm run verify`.
 
 Next work is physical-phone speech/permissions/install, manual screen-reader/full
 zoom, unassisted older-adult observations and deployment/rehearsal. Without devices

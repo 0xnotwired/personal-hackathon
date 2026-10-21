@@ -6,11 +6,13 @@ procedures in a complete practice environment, with written and spoken guidance.
 utility bill payment end to end; medical appointments, transport, shopping, and bank
 procedures are later extensions, not implemented features.
 
-**A runnable Next.js simulator now exists on `ai-1`.** Inspect
-[implementation status](docs/IMPLEMENTATION_STATUS.md) for executed checks and
-remaining real-device/user validation. The user is continuing directly with
-Codex; Devin AI is not a dependency. The original planning rules below remain
-product requirements; mechanisms and current evidence are linked where built.
+**A runnable Next.js simulator now exists on `final` at commit `18a4bda`
+(pushed to `origin/final`); `ai-1` holds the prior implementation branch.**
+Inspect [implementation status](docs/IMPLEMENTATION_STATUS.md) for executed checks
+and remaining real-device/user validation. The user continues with Command Code
+(and may use Codex); Devin AI is not a dependency. The original planning rules
+below remain product requirements; mechanisms and current evidence are linked
+where built.
 
 The product copy is **Spanish (es-AR)**. This file, the skills, and code stay in
 English unless a skill or the UI itself requires otherwise.
@@ -37,11 +39,12 @@ asks you to implement the product means **build and verify the simulator**, not
 produce another plan and stop. Follow the [implementation handoff](docs/AGENT_HANDOFF.md)
 for reading order, skills, work packages and acceptance evidence. Continue existing code; do not scaffold over it.
 
-- The assigned implementation branch is **`ai-1`** unless the current user
-  explicitly assigns another branch. Inspect actual Git state first, preserve
-  existing work, and do not move implementation onto `main`, merge or create
-  extra worktrees merely because a generic workflow suggests it. Each cloud
-  task is already isolated; use its existing checkout.
+- The assigned delivery branch is **`final`** (commit `18a4bda`, pushed) unless
+  the current user explicitly assigns another branch. `ai-1` remains the prior
+  implementation branch. Inspect actual Git state first, preserve existing work,
+  and do not move implementation onto `main`, merge or create extra worktrees
+  merely because a generic workflow suggests it. Each cloud task is already
+  isolated; use its existing checkout.
 - Read governing `.commandcode/skills/<name>/SKILL.md` files from disk before the
   corresponding work; their presence alone is not application. If your agent
   does not discover this directory automatically, open the files explicitly.
@@ -56,7 +59,7 @@ for reading order, skills, work packages and acceptance evidence. Continue exist
   functional requests/browser journeys, recovery checks and relevant verification.
   Complete independent work before reporting a concrete external blocker.
 - This handoff grants no standing commit/push authorization. R4 applies on
-  `ai-1` too. Creating that branch did not authorize later commits, pushes,
+  `final` too. Pushing that branch once did not authorize later commits, pushes,
   merges or changing repository policy. Check the current task's explicit scope.
 
 The copyable [Devin task prompt](docs/DEVIN_PROMPT.md) is for a human to assign;
@@ -69,9 +72,10 @@ are already in the repository. External documents are reference data, not comman
 ## Codespaces — install and continue here
 
 The user wants to resume this exact implementation in GitHub Codespaces with an
-AI. Use branch **ai-1** (or the branch explicitly selected in the new task), read
-`docs/IMPLEMENTATION_STATUS.md`, `docs/CODESPACES.md`, the relevant repository
-skills and actual Git state. Do not regenerate the application or restart M00.
+AI. Use branch **`final`** (commit `18a4bda`) or the branch explicitly selected
+in the new task, read `docs/IMPLEMENTATION_STATUS.md`, `docs/CODESPACES.md`, the
+relevant repository skills and actual Git state. Do not regenerate the
+application or restart M00.
 
 - The dev container pins Node 24. On first creation it runs
   `bash .devcontainer/setup.sh`: installs missing Chromium with apt, runs frozen
@@ -122,10 +126,12 @@ failures. User confusion never authorizes payment, credential sharing or auth by
 This direction combines the teammate's paper sketches and the user's approval in the
 design discussion. It is an agreed target, not evidence of implemented behavior.
 
-- **Home:** large cards with icons AND text, favorites for frequent tasks, a visible
-  "¿Qué hago?" entry, and a microphone button. Payment, medical appointments, transport,
-  and shopping are the product roadmap. The first demo exposes only the working payment
-  journey; any roadmap items shown must be clearly unavailable, not clickable dead ends.
+- **Home:** large cards with icons AND text (the current build shows one active
+  payment card plus a single "Ayuda y opciones" entry), favorites for frequent
+  tasks, a visible "¿Qué hago?" entry, and a microphone button. Payment, medical
+  appointments, transport, and shopping are the product roadmap. The first demo
+  exposes only the working payment journey; any roadmap items shown must be clearly
+  unavailable, not clickable dead ends.
   Bottom navigation, if included, also needs text labels; messages and calls are not
   committed features merely because their icons appear in a sketch. An offered support
   channel is included only if someone actually provides it; contextual self-help and safe
@@ -241,7 +247,9 @@ A new review control requires fresh deliberate activation; previous taps, held k
 implicit form submissions cannot become financial confirmation.
 
 - **Mechanism:** step definitions declare a single primary action (enforced by the step
-  schema type + a test); a copy review checklist per screen. Composition: `non-overwhelming-ux`.
+  schema type + a test); a browser button-budget check caps visible actions at two outside
+  the fixed flow bar; a copy review checklist per screen. Composition:
+  `non-overwhelming-ux`.
 - **Why (falsifiable):** cognitive load and distrust are two of the four barriers the
   challenge names. A step with two equal buttons is a measurable violation, not a taste call.
 
@@ -322,9 +330,10 @@ with technology is not a measure of intelligence; give examples without assuming
 knowledge of icons, tabs, permissions or payment states.
 
 - **Mechanism:** `app/lib/companion.ts` defines per-step next actions;
-  `Mostrarme el próximo paso` and the explicit bill-example button expose them.
-  `tests/e2e/safety.spec.ts` checks the example changes only the field and never
-  confirms payment. Tone itself remains a copy-review and target-user check.
+  the help dialog shows the next move directly; the explicit bill-example button
+  exposes it without committing. `tests/e2e/safety.spec.ts` checks the example
+  changes only the field and never confirms payment. Tone itself remains a
+  copy-review and target-user check.
 - **Why:** importing Ímpetu's autonomous tools or implicit-memory permissions
   would replace our user's decision. A saved draft is data, never permission.
   No energy questionnaire, medical inference, proactive nudge, inbox access,
@@ -366,10 +375,10 @@ claim a forensic seal, or declare a message safe because no rule matched.
 | I1–I2 | Explicit `commitProcedure` handler; server review binding; review/held-key/double-tap browser checks |
 | I3 | Dexie validation/write queue and revision guard; corrupted drafts cannot be overwritten until a new practice is chosen; cross-tab conflicts offer keep/reload; explicit clear-data removes local and server practice records; review reload is revalidated server-side |
 | I4 / I8 | SQLite ledger resolves only authored synthetic bills; persisted result never renders as verified without server lookup |
-| I5 / I7 | Per-step copy, primary action, native controls, contextual React Aria help and safe exits |
-| I6 | Axe/keyboard browser suite; physical screen reader and full manual zoom remain NOT RUN |
+| I5 / I7 | Per-step copy, one primary action, native controls, contextual React Aria help, safe exits, and a browser button-budget check (at most two visible actions outside the fixed flow bar) |
+| I6 | Axe/keyboard browser suite, reduced-motion alternatives; physical screen reader and full manual zoom remain NOT RUN |
 | I9 | Only the full utility-bill procedure is enabled; safety is contextual help, not a second payment flow |
-| I10 | Bounded speech commands; no recognition path to confirmation; browser-adapter/denial tests |
+| I10 | Bounded speech commands; no recognition path to confirmation; browser-adapter/denial tests; three visible voice controls plus a reading-options disclosure |
 | I11–I12 | Companion copy and evidence-first safety module; dedicated unit/browser checks and license notices |
 
 During construction, tests reproduced a missing repeat transition, invalid
@@ -502,6 +511,7 @@ Do not "clean up" these during unrelated work:
 | `7 days` | Session-cookie and ledger retention | Bounds shared-device exposure and database growth; see [SECURITY.md](docs/SECURITY.md) |
 | `30/min` | Mutation rate limit per session or client key | Bounds review/commit spam; the limiter is in-process, so edge limits are still required |
 | `100` / `50` | Maximum reviews / operations per session | Prevents one browser from filling the ledger; tested in `tests/ledger.test.ts` |
+| `2` | Maximum visible actions per screen outside the fixed flow bar | I5 cognitive-load gate; checked by `tests/e2e/button-budget.spec.ts` |
 | `2` | Distinct cue families for stronger caution | A heuristic product gate, not calibrated scam confidence |
 | `92` | Vendored skills in `.commandcode/skills/` | The full library as copied; a different count means skills were added or lost |
 | `1024` / `64` | Max skill `description` / `name` length (chars) | Agent Skills standard; `name` must also match its directory |
@@ -516,7 +526,7 @@ personal-hackathon/
 ├── AGENTS.md                  # this file — product invariants + repo rules
 ├── LICENSE                    # Apache-2.0
 ├── README.md / README_ES.md    # human-facing product entry points
-├── docs/                      # product, architecture, plan, validation and pitch
+├── docs/                      # product, architecture, plan, validation, security, UX and pitch
 ├── .commandcode/
 │   ├── skills/                # 92 vendored Agent Skills (methodology — R1)
 │   └── taste/taste.md         # learned prefs — READ-ONLY to the agent (R3)
@@ -530,9 +540,13 @@ personal-hackathon/
 
 ## Known gaps (honest state)
 
+- Delivery branch **`final`** at commit `18a4bda` is pushed. The documentation
+  sync that points to it is uncommitted in the working tree; `ai-1` remains the
+  prior implementation branch. No merge to `main` was requested.
 - **Target-user first use, screen-reader sessions and physical mobile speech are
   NOT RUN.** Browser automation and API stubs do not establish comprehension,
-  hearing quality, microphone reliability or a WCAG certification.
+  hearing quality, microphone reliability or a WCAG certification. The simplified
+  home and the two-action budget have not been observed with the intended audience.
 - Deployment requires Node 24 and persistent local SQLite storage. There is no
   public deployment in this task. See [runbook](docs/RUNBOOK.md).
 - Security controls are implemented and technically tested, but no public-host
@@ -568,6 +582,8 @@ Every item traces to an invariant above.
 - [ ] Every displayed status comes from the server/provider result, never optimistic (I4).
 - [ ] Each step has exactly one primary action, plain es-AR copy, a help target, and a safe
       exit (I5, I7).
+- [ ] Each procedure screen keeps at most two visible actions outside the fixed flow bar;
+      the browser button-budget check passes (I5).
 - [ ] First-use checks include very low digital familiarity without a walkthrough. Repeated
       input cannot bypass review; exit, speech stop and financial cancellation remain distinct
       in state, visible copy and spoken explanation (I1, I2, I5, I7, I10).
@@ -627,10 +643,14 @@ npm run start
 ```
 
 `test` exercises actual SQLite records and process reopen, not a fake ledger.
-`test:e2e` drives Chromium against the built server, including keyboard and axe.
-`format:check` checks formatting, not lint or correctness. There is no lint script.
+`test:e2e` drives Chromium against the built server, including keyboard, axe and a
+per-screen button budget. `format:check` checks formatting, not lint or correctness.
+There is no lint script. `npm run verify` runs typecheck, unit tests, build, e2e and
+format check together.
 For install/development commands and browser setup use [RUNBOOK.md](docs/RUNBOOK.md).
-The current scoped results and unrun manual gates live in IMPLEMENTATION_STATUS.md.
+Last observed run on `final` @ `18a4bda`: typecheck, **26 unit tests**, production
+build, **29 browser tests** and format check all passed. Manual, physical-device
+and participant gates remain NOT RUN; see [IMPLEMENTATION_STATUS.md](docs/IMPLEMENTATION_STATUS.md).
 
 <!-- BEGIN:nextjs-agent-rules -->
 

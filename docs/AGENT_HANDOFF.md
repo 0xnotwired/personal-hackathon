@@ -10,13 +10,19 @@ Date: 2026-10-21. [Root rules](../AGENTS.md) remain authoritative.
 
 For GitHub Codespaces installation and continuation, first use [CODESPACES.md](CODESPACES.md) and the Codespaces section of AGENTS.md.
 
-The active branch is **ai-1**, explicitly requested by the user after development
-on devin. There is application code now. Do not regenerate it or repeat M00 from
-scratch. Read RUNBOOK.md, DESIGN_SYSTEM.md, COMPANION_CONTRACT.md and
+The delivery branch is **`final`** at commit **`18a4bda`** (pushed to
+`origin/final`); `ai-1` remains the prior implementation branch. There is
+application code now. Do not regenerate it or repeat M00 from scratch. Read
+RUNBOOK.md, DESIGN_SYSTEM.md, COMPANION_CONTRACT.md, SECURITY.md and
 REUSE_ANALYSIS.md alongside the root invariants (now I1–I12).
 
 The working software includes the simulated utility-bill journey, durable ledger,
-drafts/favorites, optional speech and local evidence-based message help. Design
+drafts/favorites, optional speech and local evidence-based message help. The
+current home shows one active task card plus a single "Ayuda y opciones" entry;
+procedure screens keep at most two visible actions outside the fixed flow bar,
+and a browser budget check enforces that limit. Security hardening adds the
+anti-impersonation notice, explicit local/server data deletion, bounded ledger
+growth with rate limiting/retention, and production CSP/HSTS/CORP headers. Design
 is Personal-inspired blue/cyan, phone-width, with labeled bottom navigation and
 standalone install metadata. Ímpetu supplies calm next-move guidance; Gambit and
 Wolf and Cronos supply bounded evidence/corroboration adaptations with notices.
@@ -108,7 +114,7 @@ not a later hardening phase.
 
 ## Technical working rules
 
-- Use the existing checkout on `ai-1` for this assignment; inspect and preserve
+- Use the existing checkout on `final` for this assignment; inspect and preserve
   local changes. Do not merge to `main`, force-push, rewrite history, or assume a
   new agent session owns someone else's files. Follow R4 for commits/pushes.
 - Preserve AGENTS.md, skills and learned preferences when scaffolding. If a tool

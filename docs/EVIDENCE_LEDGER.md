@@ -1,7 +1,8 @@
 # Evidence and claim ledger
 
 Updated 2026-10-21. This is the single register for statements that may enter the
-README, pitch, submission or release announcement.
+README, pitch, submission or release announcement. Code evidence is pinned to
+`final` @ `18a4bda` (pushed); a later documentation sync may be uncommitted.
 
 [Validation protocol](VALIDATION.md) · [Pitch wording](DEMO_AND_PITCH.md) · [Reference method](BOOK_REFERENCE.md)
 
@@ -24,7 +25,7 @@ may shorten the detail but may not promote confidence or widen scope.
 | ID | Claim under consideration | Current status and origin | Evidence required before stronger wording | Wording allowed now |
 | --- | --- | --- | --- | --- |
 | C01 | Product target is understood, controlled, recoverable procedures | Documented: user discussion and PRODUCT.md | New design approval if the scope changes | “Diseñamos un acompañante para…” |
-| C02 | The app completes the simulated bill flow | Observed in scope: implemented tree on ai-1; 28-test Chromium receipt/recovery suite; HTTP boundary rejects foreign origins and accepts a same-host https origin | Device/user evidence before expanding to independent use | “El pago de práctica funciona de principio a fin en las pruebas de navegador” |
+| C02 | The app completes the simulated bill flow | Observed in scope: `final` @ `18a4bda`; 29-test Chromium receipt/recovery suite; HTTP boundary rejects foreign origins and accepts a same-host https origin | Device/user evidence before expanding to independent use | “El pago de práctica funciona de principio a fin en las pruebas de navegador” |
 | C03 | The app pays a real utility bill | Outside scope by explicit user clarification; not a release blocker | Would require a separate future scope request; do not seek live integration for this product | “Es un simulador completo: no realiza pagos reales” |
 | C04 | People complete the task independently | Hypothesis H1/H4; no sessions | Versioned participant observations and honest `x/n` with assistance/stop counts | “Vamos a medir comprensión y autonomía” |
 | C05 | Voice is usable on supported phones | Browser adapter implemented; stubbed controls, denial and absent-API paths observed; physical speech NOT RUN | Actual mobile input/output records | “Hay voz opcional con alternativas completas; falta comprobarla en teléfonos físicos” |

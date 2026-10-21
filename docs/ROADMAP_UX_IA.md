@@ -9,12 +9,12 @@ que exige I10 sin sumar botones a la vista. El aviso anti-suplantación quedó e
 el inicio y en la ayuda. La evidencia viva está en
 `docs/IMPLEMENTATION_STATUS.md` y en `docs/EVIDENCE_LEDGER.md` (C18).
 
-Fecha: 2026-10-21. Rama de trabajo: `ai-1`. Este documento es el encargo completo
-para que otro agente (Codex, Devin, o el propio Command Code) implemente la
-[PROPUESTA_UX_VISUAL.md](PROPUESTA_UX_VISUAL.md). No es un plan aspiracional:
-cada fase tiene cambios concretos y una prueba de salida.
+Fecha: 2026-10-21. Rama de entrega: `final` (commit `18a4bda`, pusheado). Este
+documento es el encargo completo para que otro agente (Codex, Devin, o el propio
+Command Code) implemente la [PROPUESTA_UX_VISUAL.md](PROPUESTA_UX_VISUAL.md). No
+es un plan aspiracional: cada fase tiene cambios concretos y una prueba de salida.
 
-La app actual funciona y está verificada (`npm run verify`: 26 unitarios, 28 e2e).
+La app actual funciona y está verificada (`npm run verify`: 26 unitarios, 29 e2e).
 Este rediseño **no puede romper ningún comportamiento ni invariante existente**.
 
 ## Lectura obligatoria antes de tocar código

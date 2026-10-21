@@ -6,7 +6,7 @@ available in the assigned checkout; provide any commit/push authorization explic
 
 ```text
 Repositorio: 0xnotwired/personal-hackathon
-Rama de trabajo: ai-1
+Rama de trabajo: final (commit 18a4bda)
 
 Continuá la aplicación existente de Autonomía Digital siguiendo el AGENTS.md de la raíz. Antes de actuar,
 leé docs/AGENT_HANDOFF.md, las skills que indica para la fase correspondiente,
@@ -38,7 +38,7 @@ No inventes pruebas con personas ni verificaciones de voz en teléfonos físicos
 Si una comprobación externa está bloqueada, completá el trabajo independiente
 y explicá exactamente qué falta.
 
-Respetá cambios ajenos, skills y preferencias. Trabajá en ai-1 y seguí R4:
+Respetá cambios ajenos, skills y preferencias. Trabajá en final y seguí R4:
 sin commit, push ni merge a main salvo autorización explícita para esa acción.
 Informá en español qué implementaste, cómo lo verificaste, qué queda pendiente
 y cuál es el estado Git real.

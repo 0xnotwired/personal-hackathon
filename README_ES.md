@@ -1,6 +1,6 @@
 [English](README.md) · [Español](README_ES.md) · [Producto para el equipo](docs/PRODUCTO_EQUIPO.md)
 
-# Personal · Autonomía Digital
+# Autonomía Digital
 
 **Entendé cada paso. Decidí vos.**
 
@@ -12,7 +12,11 @@ Ya funciona el recorrido de una factura ficticia de luz, gas o agua: elegir,
 ingresar un ejemplo, revisar los datos, confirmar personalmente y recibir un
 resultado verificado y un comprobante de práctica. Incluye borrador guardado,
 favoritos, recuperación al recargar, historial, rechazo, resultado en revisión
-y cancelación comprobada mientras la operación siga pendiente.
+y cancelación comprobada mientras la operación siga pendiente. La pantalla de
+inicio muestra una sola tarjeta activa y “Ayuda y opciones”; cada pantalla del
+trámite deja como máximo dos acciones visibles. Podés borrar tus datos de
+práctica del navegador y del registro de la sesión; la app no pide claves ni
+datos de tarjeta.
 
 La ayuda incorpora el tono adulto y el próximo paso concreto de Ímpetu. “Me están
 apurando para pagar” muestra frases para revisar y respuestas de ejemplo que la
@@ -44,7 +48,8 @@ alianza oficial, ni esta app web como un binario nativo o una publicación en ti
 
 ## Para el equipo y las próximas IAs
 
-La rama actual es **ai-1**. No hace falta Devin. Leer [AGENTS.md](AGENTS.md) y
+La rama de entrega es **`final`** (commit `18a4bda`, pusheada); `ai-1` queda como
+rama de implementación anterior. No hace falta Devin. Leer [AGENTS.md](AGENTS.md) y
 [AGENT_HANDOFF.md](docs/AGENT_HANDOFF.md), inspeccionar el código y continuar lo
 pendiente. Las skills relevantes están en `.commandcode/skills/`.
 
@@ -57,4 +62,4 @@ pendiente. Las skills relevantes están en `.commandcode/skills/`.
 Licencia del proyecto: [Apache-2.0](LICENSE). [NOTICE](NOTICE) y `third_party/licenses/`
 conservan las atribuciones y licencias del código adaptado. No distribuimos el libro.
 
-[Continuar en GitHub Codespaces con la IA](docs/CODESPACES.md) · [Crear Codespace en ai-1](https://codespaces.new/0xnotwired/personal-hackathon?ref=ai-1)
+[Continuar en GitHub Codespaces con la IA](docs/CODESPACES.md) · [Crear Codespace en final](https://codespaces.new/0xnotwired/personal-hackathon?ref=final)

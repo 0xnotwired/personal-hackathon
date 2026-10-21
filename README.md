@@ -1,6 +1,6 @@
 [English](README.md) · [Español](README_ES.md) · [Team product brief](docs/PRODUCTO_EQUIPO.md)
 
-# Personal · Autonomía Digital
+# Autonomía Digital
 
 **Understand each step. Make your own decision.**
 
@@ -13,6 +13,10 @@ an example, review server-owned details, explicitly confirm, inspect the verifie
 simulation result and save a labeled receipt. It includes saved drafts, favorites,
 back/reload recovery, owned history, pending/rejected examples and verified
 cancellation of pending operations. Other procedures are visibly future work.
+The interface keeps one active task card plus a single "Ayuda y opciones" entry,
+and each procedure screen shows at most two visible actions outside the fixed flow
+bar. Practice data can be deleted locally and from the server session; no
+credential or card field exists.
 
 Optional message help quotes pressure cues, keeps no-match inconclusive and
 provides reply drafts without sending them. It incorporates attributed adaptations
@@ -48,7 +52,8 @@ app-store release, offline payment or official Personal partnership is claimed.
 ## Continue the project
 
 Read [AGENTS.md](AGENTS.md) and the [agent handoff](docs/AGENT_HANDOFF.md) before
-changes. Current branch: **ai-1**. Devin AI is not required. Existing code is in
+changes. Delivery branch: **`final`** (commit `18a4bda`, pushed); `ai-1` is the
+prior implementation branch. Devin AI is not required. Existing code is in
 `app/`, checks in `tests/`, product/architecture/research in `docs/`, methodology
 in `.commandcode/`. Do not replace the app with another scaffold.
 
@@ -62,4 +67,4 @@ Repository license: [Apache-2.0](LICENSE). Adapted source licenses and notices a
 retained in `third_party/licenses/` and NOTICE; installed dependencies retain their
 own licenses. The reference book is not distributed here.
 
-[Continuar en GitHub Codespaces con la IA](docs/CODESPACES.md) · [Crear Codespace en ai-1](https://codespaces.new/0xnotwired/personal-hackathon?ref=ai-1)
+[Continuar en GitHub Codespaces con la IA](docs/CODESPACES.md) · [Crear Codespace en final](https://codespaces.new/0xnotwired/personal-hackathon?ref=final)

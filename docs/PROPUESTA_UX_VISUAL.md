@@ -1,8 +1,10 @@
 # Propuesta: menos texto, más visual y simplificado
 
-Fecha: 2026-10-21. Propuesta, no cambio aplicado. Método: skills
-`non-overwhelming-ux` y `frontend-accessibility-by-construction`, con el público
-de adultos mayores con muy baja familiaridad digital.
+Fecha: 2026-10-21. **Implementada en `final` @ `18a4bda`**; este documento
+conserva el fundamento de diseño y el [roadmap de ejecución](ROADMAP_UX_IA.md)
+registra fases y evidencia. Método: skills `non-overwhelming-ux` y
+`frontend-accessibility-by-construction`, con el público de adultos mayores con
+muy baja familiaridad digital.
 
 El problema no es que haya texto: es que hoy el texto compite con la acción.
 La regla rectora de esta propuesta es: **la pantalla se entiende mirando, y el

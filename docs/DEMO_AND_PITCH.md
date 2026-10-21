@@ -1,6 +1,7 @@
 # Demonstration, pitch and questions
 
-Status: rehearsal material for the finished practice simulator on `ai-1`. The
+Status: rehearsal material for the finished practice simulator on `final`
+(commit `18a4bda`, pushed). The
 simulation is the agreed product scope, not a prototype awaiting integration;
 the pitch speaks about it in the affirmative. Internal claim discipline (which
 word needs which evidence) lives in [EVIDENCE_LEDGER.md](EVIDENCE_LEDGER.md),
